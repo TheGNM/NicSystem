@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "Rasa";
+    src: url("../font/Rasa-VariableFont_wght.ttf");
+    font-weight: 500;
+    font-style: normal;
+}
+
+* {
+    font-family: Rasa, 'sans-serif';
+}
