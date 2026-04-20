@@ -41,3 +41,10 @@ CREATE TABLE IF NOT EXISTS admin_users (
 INSERT INTO admin_users (username, password) 
 VALUES ('admin', MD5('admin123'));
 
+ALTER TABLE sales_items DROP FOREIGN KEY sales_items_ibfk_2;
+
+ALTER TABLE sales_items 
+ADD CONSTRAINT sales_items_ibfk_2 
+FOREIGN KEY (product_id) 
+REFERENCES products(product_id) 
+ON DELETE CASCADE;
