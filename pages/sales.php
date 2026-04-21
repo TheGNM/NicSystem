@@ -43,11 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
         $quantities = $_POST['quantity'];
         $prices = $_POST['price'];
         
-        for ($i = 0; $i < count($product_ids); $i++) {
-            if (!empty($product_ids[$i]) && $quantities[$i] > 0) {
-                $product_id = (int)$product_ids[$i];
-                $quantity = (int)$quantities[$i];
-                $price = (int)$prices[$i];
+        for ($x = 0; $x < count($product_ids); $x++) {
+            if (!empty($product_ids[$x]) && $quantities[$x] > 0) {
+                $product_id = (int)$product_ids[$x];
+                $quantity = (int)$quantities[$x];
+                $price = (int)$prices[$x];
                 $subtotal = $quantity * $price;
                 
                 $item_query = "INSERT INTO sales_items (sales_id, product_id, quantity, price, subtotal) VALUES ($sales_id, $product_id, $quantity, $price, $subtotal)";
