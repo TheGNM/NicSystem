@@ -46,7 +46,7 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
     <title>Reports - NICS Agri Supply</title>
 </head>
 <body>
-    <div style="text-align: right;">
+    <div>
         Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
     </div>
     
@@ -86,7 +86,7 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
     <p><strong>Total Sales: ₱<?php echo number_format($total_sales, 2); ?></strong></p>
     <p>Number of Transactions: <?php echo mysqli_num_rows($sales); ?></p>
     
-    <table border="1" cellpadding="10">
+    <table>
         <tr><th>Invoice #</th><th>Date</th><th>Total Amount</th><th>Payment</th><th>Change</th></tr>
         <?php 
         mysqli_data_seek($sales, 0);
@@ -108,7 +108,7 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
     <hr>
     
     <h3>Current Inventory Status</h3>
-    <table border="1" cellpadding="10">
+    <table>
         <tr><th>Product Name</th><th>Current Stock</th><th>Low Stock Alert</th><th>Status</th></tr>
         <?php 
         mysqli_data_seek($inventory, 0);

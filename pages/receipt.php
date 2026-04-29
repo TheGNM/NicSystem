@@ -37,7 +37,7 @@ $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JO
     <title>Receipt - <?php echo $invoice; ?></title>
 </head>
 <body onload="window.print()">
-    <div style="text-align: center;">
+    <div>
         <h2>NICS AGRI SUPPLY</h2>
         <p>Salapungan, San Rafael, Bulacan</p>
         <p>Tel: 09123456789</p>
@@ -48,7 +48,7 @@ $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JO
         <hr>
     </div>
     
-    <table border="0" cellpadding="5" width="100%">
+    <table>
         <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
         <?php while($item = mysqli_fetch_assoc($items)): ?>
         <tr>

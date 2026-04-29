@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
     <title>New Sale - NICS Agri Supply</title>
 </head>
 <body>
-    <div style="text-align: right;">
+    <div>
         Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
     </div>
     
