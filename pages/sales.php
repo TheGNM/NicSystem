@@ -72,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     <link rel="stylesheet" href="../resources/css/global.css">
     <title>New Sale - NICS Agri Supply</title>
     <?php
-session_start();
 
 $host = 'localhost';
 $username = 'root';
@@ -114,7 +113,7 @@ if (isset($_GET['remove_item'])) {
 }
 
 // Get products
-$products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0 AND is_active = 1 ORDER BY product_name");
+$products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0");
 
 // Store POST data in session to preserve when adding/removing items
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['complete_sale'])) {
