@@ -96,16 +96,15 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
             </ul>
         </nav>
         <hr>
-        <div class="products-content">
-            <?php if(isset($_SESSION['message'])): ?>
-                <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
+        <?php if(isset($_SESSION['message'])): ?>
+            <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
             <?php endif; ?>
             
             <?php if(isset($_SESSION['error'])): ?>
                 <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
             <?php endif; ?>
-            
-            <div class="add-product-form">
+        <div class="products-content">
+            <!-- <div class="add-product-form">
                 <h3>Add New Product</h3>
                 <form method="POST" action="">
                     <table>
@@ -116,6 +115,9 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                         <tr><td></td><td><input type="submit" name="add_product" value="Add Product"></td></tr>
                     </table>
                 </form>
+            </div> -->
+            <div class="button-add">
+                <button id="openModalBtn" class="add-btn addprod-button">Add Product</button>
             </div>
             <div class="table-content">
                 <h3>Product List</h3>
@@ -143,5 +145,23 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                 </table>
             </div>
         </div>
+
+        <div id="overlay" class="overlay"></div>
+            <div id="productModal" class="modal">
+                <h2>Add Product</h2>
+                <form method="POST" action="">
+                    <table>
+                        <tr><td>Product Name:</td><td><input type="text" name="product_name" required></td></tr>
+                        <tr><td>Price:</td><td><input type="number" name="price" required></td></tr>
+                        <tr><td>Initial Quantity:</td><td><input type="number" name="quantity" required></td></tr>
+                        <tr><td>Low Stock Alert:</td><td><input type="number" name="low_stock_notif" value="5" required></td></tr>
+                        <tr><td></td><td><input type="submit" name="add_product" value="Add Product"></td></tr>
+                    </table>
+                </form>
+                <button type="button" id="closeModalBtn">Cancel</button>
+            </div>
+            </form>
+        </div>
+        <script src="../resources/js/prod.js"></script>
     </body>
 </html>
