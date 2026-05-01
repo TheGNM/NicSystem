@@ -53,18 +53,3 @@
 .navbar li a:hover {
     background-color: #575757;
 }
-
-.dashboard-content {
-    background-color: antiquewhite;
-    align-content: center;
-}
-
-.dashboard-content h3 {
-    padding: 1vh;
-    color: #333;
-}
-
-.dashboard-content table, .dashboard-content th, .dashboard-content td {
-    border: 1px solid #000000;
-    padding: 2px;
-}

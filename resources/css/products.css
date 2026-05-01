@@ -1,0 +1,39 @@
+.products-content {
+    background-color: antiquewhite;
+    align-content: center;
+}
+
+.products-content h3 {
+    padding: 1vh;
+    color: #333;
+}
+
+.products-content .add-product-form {
+    width: 400px;
+    margin: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.products-content .add-product-form input[type="text"],
+.products-content .add-product-form input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.products-content .product-list thead, .products-content .product-list tbody, .products-content .product-list th, .products-content .product-list tr, .products-content .product-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.products-content .product-list tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+
+.products-content .product-list tbody tr:nth-of-type(even) {
+    background-color: #ffffff;
+}

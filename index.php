@@ -24,6 +24,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="resources/css/global.css">
+    <link rel="stylesheet" href="resources/css/dashboard.css">
     <title>NICS Agri Supply - Dashboard</title>
 </head>
 <body>

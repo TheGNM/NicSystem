@@ -72,66 +72,76 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../resources/css/global.css">
-    <title>Products - NICS Agri Supply</title>
-</head>
-<body>
-    <div>
-        Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
-    </div>
-    
-    <h1>NICS AGRI SUPPLY</h1>
-    <h2>Products Management</h2>
-    
-    <nav>
-        <a href="../index.php">Dashboard</a> | 
-        <a href="products.php">Products</a> | 
-        <a href="sales.php">New Sale</a> | 
-        <a href="sales_history.php">Sales History</a> | 
-        <a href="reports.php">Reports</a>
-    </nav>
-    
-    <hr>
-    
-    <?php if(isset($_SESSION['message'])): ?>
-        <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
-    <?php endif; ?>
-    
-    <?php if(isset($_SESSION['error'])): ?>
-        <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
-    <?php endif; ?>
-    
-    <h3>Add New Product</h3>
-    <form method="POST" action="">
-        <table>
-            <tr><td>Product Name:</td><td><input type="text" name="product_name" required></td></tr>
-            <tr><td>Price:</td><td><input type="number" name="price" required></td></tr>
-            <tr><td>Initial Quantity:</td><td><input type="number" name="quantity" required></td></tr>
-            <tr><td>Low Stock Alert:</td><td><input type="number" name="low_stock_notif" value="5" required></td></tr>
-            <tr><td></td><td><input type="submit" name="add_product" value="Add Product"></td></tr>
-        </table>
-    </form>
-    
-    <h3>Product List</h3>
-    <table>
-        <tr>
-            <th>ID</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Low Stock Alert</th><th>Status</th><th>Actions</th>
-        </tr>
-        <?php while($row = mysqli_fetch_assoc($products)): ?>
-        <form method="POST" action="">
-            <tr>
-                <td><?php echo $row['product_id']; ?><input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>"></td>
-                <td><input type="text" name="product_name" value="<?php echo $row['product_name']; ?>" required></td>
-                <td><input type="number" name="price" value="<?php echo $row['price']; ?>" required></td>
-                <td><input type="number" name="quantity" value="<?php echo $row['quantity']; ?>" required></td>
-                <td><input type="number" name="low_stock_notif" value="<?php echo $row['low_stock_notif']; ?>" required></td>
-                <td style="color: <?php echo $row['quantity'] <= $row['low_stock_notif'] ? 'red' : 'green'; ?>;"><?php echo $row['quantity'] <= $row['low_stock_notif'] ? 'Low Stock' : 'OK'; ?></td>
-                <td><input type="submit" name="update_product" value="Update"> <a href="?delete=<?php echo $row['product_id']; ?>" onclick="return confirm('Delete?')">Delete</a></td>
-            </tr>
-        </form>
-        <?php endwhile; ?>
-    </table>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../resources/css/global.css">
+        <link rel="stylesheet" href="../resources/css/products.css">
+        <title>Products - NICS Agri Supply</title>
+    </head>
+    <body>
+        <div class="logout-session">
+            Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
+        </div>
+        <div class="header-header">
+            <h1>NICS AGRI SUPPLY</h1>
+            <h2>Products Management</h2>
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="../index.php">Dashboard</a></li>
+                <li><a href="products.php">Products</a></li>
+                <li><a href="sales.php">New Sale</a></li>
+                <li><a href="sales_history.php">Sales History</a></li>
+                <li><a href="reports.php">Reports</a></li>
+            </ul>
+        </nav>
+        <hr>
+        <div class="products-content">
+            <?php if(isset($_SESSION['message'])): ?>
+                <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
+            <?php endif; ?>
+            
+            <?php if(isset($_SESSION['error'])): ?>
+                <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+            <?php endif; ?>
+            
+            <div class="add-product-form">
+                <h3>Add New Product</h3>
+                <form method="POST" action="">
+                    <table>
+                        <tr><td>Product Name:</td><td><input type="text" name="product_name" required></td></tr>
+                        <tr><td>Price:</td><td><input type="number" name="price" required></td></tr>
+                        <tr><td>Initial Quantity:</td><td><input type="number" name="quantity" required></td></tr>
+                        <tr><td>Low Stock Alert:</td><td><input type="number" name="low_stock_notif" value="5" required></td></tr>
+                        <tr><td></td><td><input type="submit" name="add_product" value="Add Product"></td></tr>
+                    </table>
+                </form>
+            </div>
+            <div class="table-content">
+                <h3>Product List</h3>
+                <table class="product-list">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Low Stock Alert</th><th>Status</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php while($row = mysqli_fetch_assoc($products)): ?>
+                    <form method="POST" action="">
+                        <tr>
+                            <td><?php echo $row['product_id']; ?><input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>"></td>
+                            <td><input type="text" name="product_name" value="<?php echo $row['product_name']; ?>" required></td>
+                            <td><input type="number" name="price" value="<?php echo $row['price']; ?>" required></td>
+                            <td><input type="number" name="quantity" value="<?php echo $row['quantity']; ?>" required></td>
+                            <td><input type="number" name="low_stock_notif" value="<?php echo $row['low_stock_notif']; ?>" required></td>
+                            <td style="color: <?php echo $row['quantity'] <= $row['low_stock_notif'] ? 'red' : 'green'; ?>;"><?php echo $row['quantity'] <= $row['low_stock_notif'] ? 'Low Stock' : 'OK'; ?></td>
+                            <td><input type="submit" name="update_product" value="Update"> <a href="?delete=<?php echo $row['product_id']; ?>" onclick="return confirm('Delete?')">Delete</a></td>
+                        </tr>
+                    </form>
+                    <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
 </html>
