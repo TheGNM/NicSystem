@@ -6,4 +6,5 @@ Agri Supply Sales and Inventory System
 - [ ] Server side / Backend (PHP)
 - [ ] Database (MySQL)
 - [ ] Design (CSS)
+- [ ] Funtions (JavaScript)
 - [x] Hopes and Dreams
