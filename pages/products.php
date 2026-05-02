@@ -116,15 +116,21 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                     </table>
                 </form>
             </div> -->
-            <div class="button-add">
-                <button id="openModalBtn" class="add-btn addprod-button">Add Product</button>
-            </div>
             <div class="table-content">
                 <h3>Product List</h3>
+                <div class="button-add">
+                    <button id="openModalBtn" class="add-btn addprod-button">Add Product</button>
+                </div>
                 <table class="product-list">
                     <thead>
                         <tr>
-                            <th>ID</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Low Stock Alert</th><th>Status</th><th>Actions</th>
+                            <th onclick="sortTable()" style="cursor:pointer" id="id-header">ID <span id="sort-icon">↕</span></th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Low Stock Alert</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,5 +169,6 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
             </form>
         </div>
         <script src="../resources/js/prod.js"></script>
+        <script src="../resources/js/prodsort.js"></script>
     </body>
 </html>

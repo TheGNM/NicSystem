@@ -26,24 +26,27 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../resources/css/global.css">
+    <link rel="stylesheet" href="../resources/css/sales_history.css">
     <title>Sales History - NICS Agri Supply</title>
 </head>
 <body>
-    <div>
+    <div class="logout-session">
         Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
     </div>
-    
-    <h1>NICS AGRI SUPPLY</h1>
-    <h2>Sales History</h2>
-    
-    <nav>
-        <a href="../index.php">Dashboard</a> | 
-        <a href="products.php">Products</a> | 
-        <a href="sales.php">New Sale</a> | 
-        <a href="sales_history.php">Sales History</a> | 
-        <a href="reports.php">Reports</a>
+    <div class="header-header">
+        <h1>NICS AGRI SUPPLY</h1>
+        <h2>Sales History</h2>
+    </div>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../index.php">Dashboard</a></li>
+            <li><a href="products.php">Products</a></li>
+            <li><a href="sales.php">New Sale</a></li>
+            <li><a href="sales_history.php">Sales History</a></li>
+            <li><a href="reports.php">Reports</a></li>
+        </ul>
     </nav>
-    
+
     <hr>
     
     <h3>All Transactions</h3>

@@ -1,0 +1,22 @@
+
+.print-header {
+    display: none;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .print-header {
+        display: block !important;
+    }
+    #printableTable, #printableTable * {
+        visibility: visible;
+    }
+    #printableTable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}

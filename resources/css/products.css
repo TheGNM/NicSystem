@@ -88,6 +88,21 @@
 }
 
 .products-content .product-list {
-    width: 100%;
+    width: 50%;
     border-collapse: collapse;
+    font-size: 16px;
+}
+
+.products-content .product-list th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.products-content .product-list th, .products-content .product-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.products-content .product-list tbody tr:hover {
+    background-color: #ddd;
 }

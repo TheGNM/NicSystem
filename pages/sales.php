@@ -70,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../resources/css/global.css">
+    <link rel="stylesheet" href="../resources/css/sales.css">
     <title>New Sale - NICS Agri Supply</title>
     <?php
 
@@ -198,23 +199,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
     <title>New Sale - NICS Agri Supply</title>
 </head>
 <body>
-    <div>
+    <div class="logout-session">
         Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="logout.php">Logout</a>
     </div>
-    
-    <h1>NICS AGRI SUPPLY</h1>
-    <h2>New Sale Transaction</h2>
-    
-    <nav>
-        <a href="../index.php">Dashboard</a> | 
-        <a href="products.php">Products</a> | 
-        <a href="sales.php">New Sale</a> | 
-        <a href="sales_history.php">Sales History</a> | 
-        <a href="reports.php">Reports</a>
+    <div class="header-header">
+        <h1>NICS AGRI SUPPLY</h1>
+        <h2>New Sale Transaction</h2>
+    </div>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../index.php">Dashboard</a></li>
+            <li><a href="products.php">Products</a></li>
+            <li><a href="sales.php">New Sale</a></li>
+            <li><a href="sales_history.php">Sales History</a></li>
+            <li><a href="reports.php">Reports</a></li>
+        </ul>
     </nav>
-    
     <hr>
-    
     <?php if(isset($_SESSION['error'])): ?>
         <p style="color: red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>

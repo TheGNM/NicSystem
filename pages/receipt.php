@@ -49,7 +49,12 @@ $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JO
     </div>
     
     <table>
-        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
         <?php while($item = mysqli_fetch_assoc($items)): ?>
         <tr>
             <td><?php echo $item['product_name']; ?></td>
