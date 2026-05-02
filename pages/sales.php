@@ -281,11 +281,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
             <tr>
                 <td colspan="2">
                     <input type="submit" name="calculate" value="Update Total">
-                    <input type="submit" name="complete_sale" value="Complete Sale" onclick="return confirm('Complete this sale?')">
+                    <input type="button" value="Complete Sale" onclick="processSaleAndPrint()" onclick="return confirm('Complete this sale?')">
                 </td>
             </tr>
         </table>
     </form>
+    <iframe id="printFrame" style="display:none;"></iframe>
+    <script src="../resources/js/print.js"></script>
 </body>
 </html>
 </head>
