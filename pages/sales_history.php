@@ -46,22 +46,42 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
             <li><a href="reports.php">Reports</a></li>
         </ul>
     </nav>
-
     <hr>
-    
-    <h3>All Transactions</h3>
-    <table>
-        <tr><th>Invoice #</th><th>Date</th><th>Total Amount</th><th>Payment</th><th>Change</th><th>Actions</th></tr>
-        <?php while($row = mysqli_fetch_assoc($sales)): ?>
-        <tr>
-            <td><?php echo $row['invoice_number']; ?></td>
-            <td><?php echo $row['sale_date']; ?></td>
-            <td>₱<?php echo number_format($row['total_amount'], 2); ?></td>
-            <td>₱<?php echo number_format($row['payment_amount'], 2); ?></td>
-            <td>₱<?php echo number_format($row['change_amount'], 2); ?></td>
-            <td><a href="receipt.php?invoice=<?php echo $row['invoice_number']; ?>" target="_blank">View Receipt</a></td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+    <div class="history-whole">
+        <div class="sales-history-content">
+            <h3>All Transactions</h3>
+            <table class="sales-history-table">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Payment</th>
+                        <th>Change</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($row = mysqli_fetch_assoc($sales)): ?>
+                    <tr>
+                        <td><?php echo $row['invoice_number']; ?></td>
+                        <td><?php echo $row['sale_date']; ?></td>
+                        <td>₱<?php echo number_format($row['total_amount'], 2); ?></td>
+                        <td>₱<?php echo number_format($row['payment_amount'], 2); ?></td>
+                        <td>₱<?php echo number_format($row['change_amount'], 2); ?></td>
+                        <td>
+                            <!-- <a href="receipt.php?invoice=<?php #echo $row['invoice_number']; ?>" target="_blank">View Receipt</a> -->
+                            <button type="button" onclick="loadReceipt('<?php echo $row['invoice_number']; ?>')">View Receipt</button>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="receipt-view">
+            <iframe id="receiptFrame" src="about:blank"></iframe>
+        </div>
+    </div>
+    <script src="../resources/js/view.js"></script>
 </body>
 </html>
