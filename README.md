@@ -1,7 +1,7 @@
 # NicSystem
 BSIT IT225 Web Final Project:
 Agri Supply Sales and Inventory System  
-Collaboration with
+Collaboration courses with: IT224, IT223, & ITE02
 
 ## Languages used
 - [ ] Server side / Backend (PHP)
