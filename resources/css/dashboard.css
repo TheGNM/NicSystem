@@ -1,14 +1,33 @@
 .dashboard-content {
     background-color: antiquewhite;
-    align-content: center;
+    min-height: 84.94vh;
 }
 
-.dashboard-content h3 {
-    padding: 1vh;
+.dashboard-content h2 {
+    padding-top: 20px;
     color: #333;
+}
+
+.dashboard-whole {
+    padding-left: 20px;
 }
 
 .dashboard-content table, .dashboard-content th, .dashboard-content td {
     border: 1px solid #000000;
+    border-collapse: collapse;
     padding: 2px;
+}
+
+.dashboard-content table {
+    width: 80%;
+    font-size: 24px;
+}
+
+.dashboard-content table th {
+    background-color: #7c7c7c;
+    color: white;
+}
+
+.dashboard-content table td {
+    background-color: #f2f2f2;
 }

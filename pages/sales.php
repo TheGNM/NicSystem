@@ -288,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
     </form>
     <iframe id="printFrame" style="display:none;"></iframe>
     <script src="../resources/js/print.js"></script>
+    <script src="../resources/js/dropdown.js"></script>
 </body>
 </html>
 </head>

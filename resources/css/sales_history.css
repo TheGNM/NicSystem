@@ -5,8 +5,7 @@ table, thead, tbody, tr, th, td {
 }
 
 .sales-history-content {
-    width: 100%;
-    padding-top: 20px;
+    padding: 20px;
 }
 
 .sales-history-content .sales-history-table tbody tr:nth-of-type(odd) {
@@ -32,21 +31,23 @@ table, thead, tbody, tr, th, td {
 
 .history-whole {
     display: flex;
-    width: 100%;
+    flex-direction: row;
+    /* width: 100%;
     align-items: flex-start;
-    gap: 20px;
+    gap: 20px; */
     background-color: antiquewhite;
+    min-height: 84.94vh;
 }
 
-.sales-history-table {
+/* .sales-history-table {
     flex: 3;
     overflow-x: auto;
-}
+} */
 
 .receipt-view {
-    padding-right: 200px;
-    padding-top: 20px;
-    flex: 3;
+    padding-top: 43px;
+    padding-left: 20px;
+    flex: 1;
     min-width: 300px;
     background-color: antiquewhite;
 }

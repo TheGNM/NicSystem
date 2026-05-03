@@ -116,11 +116,8 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                     </table>
                 </form>
             </div> -->
+            <h3>Product List</h3>
             <div class="table-content">
-                <h3>Product List</h3>
-                <div class="button-add">
-                    <button id="openModalBtn" class="add-btn addprod-button">Add Product</button>
-                </div>
                 <table class="product-list">
                     <thead>
                         <tr>
@@ -149,6 +146,9 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                     <?php endwhile; ?>
                     </tbody>
                 </table>
+                <div class="button-add">
+                    <button id="openModalBtn" class="add-btn addprod-button">Add Product</button>
+                </div>
             </div>
         </div>
 

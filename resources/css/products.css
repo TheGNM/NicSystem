@@ -1,6 +1,7 @@
 .products-content {
     background-color: antiquewhite;
-    align-content: center;
+    min-height: 84.94vh;
+
 }
 
 .products-content h3 {
@@ -81,16 +82,26 @@
     border-radius: 10px;
 }
 
+.table-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 .button-add {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
 }
 
 .products-content .product-list {
-    width: 50%;
     border-collapse: collapse;
     font-size: 16px;
+    flex: 1;
+}
+
+.products-content h3 {
+    padding: 1vh;
+    color: #333;
 }
 
 .products-content .product-list th {

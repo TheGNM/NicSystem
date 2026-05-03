@@ -47,61 +47,65 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     </nav>
     <hr>
     <div class="dashboard-content">
-        <h3>Dashboard</h3>
+        <div class="dashboard-whole">
+            <div class="db-table">
+                <h2>Dashboard</h2>
+                <?php
+                $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
+                $total_products = mysqli_fetch_assoc($result)['total'];
 
-        <?php
-        $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
-        $total_products = mysqli_fetch_assoc($result)['total'];
+                $result = mysqli_query($conn, "SELECT COUNT(*) as total, SUM(total_amount) as total_sales FROM sales WHERE DATE(sale_date) = CURDATE()");
+                $today_sales = mysqli_fetch_assoc($result);
 
-        $result = mysqli_query($conn, "SELECT COUNT(*) as total, SUM(total_amount) as total_sales FROM sales WHERE DATE(sale_date) = CURDATE()");
-        $today_sales = mysqli_fetch_assoc($result);
-
-        $result = mysqli_query($conn, "SELECT * FROM products WHERE quantity <= low_stock_notif");
-        $low_stock = mysqli_num_rows($result);
-
-        $result = mysqli_query($conn, "SELECT SUM(total_amount) as total_revenue FROM sales");
-        $total_revenue = mysqli_fetch_assoc($result)['total_revenue'];
-        ?>
-
-        <table>
-            <tr>
-                <th>Total Products</th>
-                <td><?php echo $total_products; ?></td>
-            </tr>
-            <tr>
-                <th>Today's Sales</th>
-                <td><?php echo $today_sales['total'] ?? 0; ?> transactions (₱<?php echo number_format($today_sales['total_sales'] ?? 0, 2); ?>)</td>
-            </tr>
-            <tr>
-                <th>Low Stock Items</th>
-                <td style="color: <?php echo $low_stock > 0 ? 'red' : 'green'; ?>"><?php echo $low_stock; ?> items</td>
-            </tr>
-            <tr>
-                <th>Total Revenue</th>
-                <td>₱<?php echo number_format($total_revenue ?? 0, 2); ?></td>
-            </tr>
-        </table>
-
-        <?php if ($low_stock > 0): ?>
-            <h3 style="color: red;">⚠️ Low Stock Alert!</h3>
-            <table border="1" cellpadding="10">
-                <tr>
-                    <th>Product Name</th>
-                    <th>Current Stock</th>
-                    <th>Low Stock Threshold</th>
-                </tr>
-                <?php 
                 $result = mysqli_query($conn, "SELECT * FROM products WHERE quantity <= low_stock_notif");
-                while($row = mysqli_fetch_assoc($result)):
+                $low_stock = mysqli_num_rows($result);
+
+                $result = mysqli_query($conn, "SELECT SUM(total_amount) as total_revenue FROM sales");
+                $total_revenue = mysqli_fetch_assoc($result)['total_revenue'];
                 ?>
-                <tr>
-                    <td><?php echo $row['product_name']; ?></td>
-                    <td style="color: red;"><?php echo $row['quantity']; ?></td>
-                    <td><?php echo $row['low_stock_notif']; ?></td>
-                </tr>
-                <?php endwhile; ?>
-            </table>
-        <?php endif; ?>
+
+                <table>
+                    <tr>
+                        <th>Total Products</th>
+                        <td><?php echo $total_products; ?></td>
+                    </tr>
+                    <tr>
+                        <th>Today's Sales</th>
+                        <td><?php echo $today_sales['total'] ?? 0; ?> transactions (₱<?php echo number_format($today_sales['total_sales'] ?? 0, 2); ?>)</td>
+                    </tr>
+                    <tr>
+                        <th>Low Stock Items</th>
+                        <td style="color: <?php echo $low_stock > 0 ? 'red' : 'green'; ?>"><?php echo $low_stock; ?> items</td>
+                    </tr>
+                    <tr>
+                        <th>Total Revenue</th>
+                        <td>₱<?php echo number_format($total_revenue ?? 0, 2); ?></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="low-stock-alert">
+                <?php if ($low_stock > 0): ?>
+                    <h3 style="color: red;">⚠️ Low Stock Alert!</h3>
+                    <table border="1" cellpadding="10">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Current Stock</th>
+                            <th>Low Stock Threshold</th>
+                        </tr>
+                        <?php 
+                        $result = mysqli_query($conn, "SELECT * FROM products WHERE quantity <= low_stock_notif");
+                        while($row = mysqli_fetch_assoc($result)):
+                        ?>
+                        <tr>
+                            <td><?php echo $row['product_name']; ?></td>
+                            <td style="color: red;"><?php echo $row['quantity']; ?></td>
+                            <td><?php echo $row['low_stock_notif']; ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </body>
 </html>
