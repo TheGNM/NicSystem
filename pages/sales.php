@@ -92,11 +92,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-// Handle adding more items
 $item_count = isset($_GET['items']) ? (int)$_GET['items'] : 1;
 if (isset($_GET['add_item'])) {
     $item_count = (int)$_GET['items'] + 1;
-    // Preserve existing POST data when adding item
+
     $redirect = "sales.php?items=" . $item_count;
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $redirect .= "&preserve=1";
@@ -105,7 +104,6 @@ if (isset($_GET['add_item'])) {
     exit();
 }
 
-// Handle removing an item
 if (isset($_GET['remove_item'])) {
     $item_count = (int)$_GET['items'] - 1;
     if ($item_count < 1) $item_count = 1;
@@ -113,10 +111,8 @@ if (isset($_GET['remove_item'])) {
     exit();
 }
 
-// Get products
 $products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0");
 
-// Store POST data in session to preserve when adding/removing items
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['complete_sale'])) {
     $_SESSION['sale_data'] = $_POST;
 }
@@ -124,7 +120,6 @@ if (isset($_GET['preserve']) && isset($_SESSION['sale_data'])) {
     $_POST = $_SESSION['sale_data'];
 }
 
-// Process sale submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     $payment_amount = (int)$_POST['payment_amount'];
     $total_amount = (int)$_POST['total_amount'];
@@ -152,7 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
                 $product_id = (int)$product_ids[$i];
                 $quantity = (int)$quantities[$i];
                 
-                // Get price from database
                 $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $product_id");
                 $price_row = mysqli_fetch_assoc($price_query);
                 $price = $price_row['price'];
@@ -173,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     }
 }
 
-// Calculate total
 $total = 0;
 $product_prices = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
