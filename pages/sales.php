@@ -74,23 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     <title>New Sale - NICS Agri Supply</title>
     <?php
 
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'nics_db';
-
-$conn = mysqli_connect($host, $username, $password, $database);
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_set_charset($conn, "utf8mb4");
-
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
 
 $item_count = isset($_GET['items']) ? (int)$_GET['items'] : 1;
 if (isset($_GET['add_item'])) {

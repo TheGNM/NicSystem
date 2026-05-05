@@ -104,18 +104,7 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                 <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
             <?php endif; ?>
         <div class="products-content">
-            <!-- <div class="add-product-form">
-                <h3>Add New Product</h3>
-                <form method="POST" action="">
-                    <table>
-                        <tr><td>Product Name:</td><td><input type="text" name="product_name" required></td></tr>
-                        <tr><td>Price:</td><td><input type="number" name="price" required></td></tr>
-                        <tr><td>Initial Quantity:</td><td><input type="number" name="quantity" required></td></tr>
-                        <tr><td>Low Stock Alert:</td><td><input type="number" name="low_stock_notif" value="5" required></td></tr>
-                        <tr><td></td><td><input type="submit" name="add_product" value="Add Product"></td></tr>
-                    </table>
-                </form>
-            </div> -->
+
             <h3>Product List</h3>
             <div class="table-content">
                 <table class="product-list">
