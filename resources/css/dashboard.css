@@ -1,33 +1,64 @@
 .dashboard-content {
-    background-color: antiquewhite;
-    min-height: 84.94vh;
+    padding: 28px;
 }
-
-.dashboard-content h2 {
-    padding-top: 20px;
-    color: #333;
+ 
+.low-stock-alert {
+    background: #ffffff;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: none;
 }
-
-.dashboard-whole {
-    padding-left: 20px;
+ 
+.low-stock-alert:not(:empty) {
+    display: block;
 }
-
-.dashboard-content table, .dashboard-content th, .dashboard-content td {
-    border: 1px solid #000000;
+ 
+.low-stock-alert h3 {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-bottom: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #dc2626 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+ 
+.low-stock-alert table {
+    width: 100%;
     border-collapse: collapse;
-    padding: 2px;
 }
-
-.dashboard-content table {
-    width: 80%;
-    font-size: 24px;
+ 
+.low-stock-alert table tr th {
+    background: #f9f7f3;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ede9e0;
+    text-align: left;
 }
-
-.dashboard-content table th {
-    background-color: #7c7c7c;
-    color: white;
+ 
+.low-stock-alert table tr td {
+    padding: 11px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid #f9f7f3;
+    color: #1a2e1a;
 }
-
-.dashboard-content table td {
-    background-color: #f2f2f2;
+ 
+.low-stock-alert table tr:last-child td {
+    border-bottom: none;
 }
+ 
+@media (max-width: 500px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+ 

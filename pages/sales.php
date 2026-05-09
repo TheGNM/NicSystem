@@ -216,24 +216,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
         </ul>
     </nav>
     <hr>
+
     <?php if(isset($_SESSION['error'])): ?>
         <p style="color: red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     
+    <div class="sales-content">
     <form method="POST" action="?items=<?php echo $item_count; ?>">
         <?php for($i = 1; $i <= $item_count; $i++): ?>
             <?php if($i > 1): ?>
-                <hr>
+                <hr class="item-divider">
             <?php endif; ?>
             
-            <h4>Item <?php echo $i; ?></h4>
+            <div class="item-row">
+            <h4 class="item-label">Item <?php echo $i; ?></h4>
             
-            <select name="product_id[]">
-                <option value="">Select Product</option>
-                <?php 
-                mysqli_data_seek($products, 0);
-                while($row = mysqli_fetch_assoc($products)): 
-                    $selected = (isset($_POST['product_id'][$i-1]) && $_POST['product_id'][$i-1] == $row['product_id']) ? 'selected' : '';
+                <div class="item-fields">
+                <select name="product_id[]" class="product-select">
+                    <option value="">Select Product</option>
+                    <?php 
+                    mysqli_data_seek($products, 0);
+                    while($row = mysqli_fetch_assoc($products)): 
+                        $selected = (isset($_POST['product_id'][$i-1]) && $_POST['product_id'][$i-1] == $row['product_id']) ? 'selected' : '';
                 ?>
                 <option value="<?php echo $row['product_id']; ?>" <?php echo $selected; ?>>
                     <?php echo $row['product_name']; ?> - ₱<?php echo number_format($row['price'], 2); ?> (Stock: <?php echo $row['quantity']; ?>)
@@ -241,30 +245,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
                 <?php endwhile; ?>
             </select>
             
-            Quantity: 
-            <input type="number" name="quantity[]" min="1" value="<?php echo isset($_POST['quantity'][$i-1]) ? $_POST['quantity'][$i-1] : '1'; ?>">
-            
+            <div class="qty-wrap">
+            <label class="qty-label">Quantity: </label>
+            <input type="number" name="quantity[]" min="1" class="qty-input" value="  <?php echo isset($_POST['quantity'][$i-1]) ? $_POST['quantity'][$i-1] : '1'; ?>">
+            </div>
+
             <?php if($i > 1): ?>
-                <a href="?remove_item=<?php echo $i; ?>&items=<?php echo $item_count; ?>">Remove</a>
+                <a href="?remove_item=<?php echo $i; ?>&items=<?php echo $item_count; ?>" class="remove-link">Remove</a>
             <?php endif; ?>
+            </div>
+        </div>
         <?php endfor; ?>
         
         <br><br>
-        <a href="?add_item=1&items=<?php echo $item_count; ?>">+ Add Another Item</a>
+        <a href="?add_item=1&items=<?php echo $item_count; ?>" class="add-item-link">+ Add Another Item</a>
         
-        <hr>
+        <hr class="sale-divider">
         
+    <div class="sale-summary">
         <h3>Total: ₱<?php echo number_format($total, 2); ?></h3>
         <input type="hidden" name="total_amount" value="<?php echo $total; ?>">
         
-        <table>
+        <table class="payment-table">
             <tr>
-                <td>Payment Amount: </td>
-                <td><input type="number" name="payment_amount" value="<?php echo isset($_POST['payment_amount']) ? $_POST['payment_amount'] : ''; ?>"></td>
+                <td class="pay-label">Payment Amount: </td>
+                <td><input type="number" name="payment_amount" class="payment-input" value="<?php echo isset($_POST['payment_amount']) ? $_POST['payment_amount'] : ''; ?>"></td>
             </tr>
             <tr>
-                <td>Change: </td>
-                <td>
+                <td class="pay-label">Change: </td>
+                <td class="change-value">
                     <?php 
                     $payment = isset($_POST['payment_amount']) ? (int)$_POST['payment_amount'] : 0;
                     $change = $payment - $total;
@@ -279,13 +288,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <input type="submit" name="calculate" value="Update Total">
-                    <input type="button" value="Complete Sale" onclick="processSaleAndPrint()" onclick="return confirm('Complete this sale?')">
+                <td colspan="2" class="sale-actions">
+                    <input type="submit" name="calculate" value="Update Total" class="btn-update">
+                    <input type="button" value="Complete Sale" class="btn-complete" onclick="processSaleAndPrint()" onclick="return confirm('Complete this sale?')">
                 </td>
             </tr>
         </table>
+        </div>
     </form>
+        </div>
     <iframe id="printFrame" style="display:none;"></iframe>
     <script src="../resources/js/print.js"></script>
     <script src="../resources/js/dropdown.js"></script>

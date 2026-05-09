@@ -1,0 +1,95 @@
+.background-container {
+    background-image: url('../images/background.jpg');
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.background-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(34, 34, 34, 0.5);
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 90vh;
+    column-gap: 0px;
+}
+
+.heading{
+    font-size: 30px;
+    text-align: center;
+    font-weight: 500 ;
+}
+
+.login-container {
+    position: absolute;
+    max-width: 450px;
+    width: 100%;
+    margin: 20px;
+    padding-top: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.form-self {
+    margin: 0 20px;
+    margin-bottom: 30px ;
+}
+
+.field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+}
+
+.field input{
+    outline: none;
+    border-style: none none solid none;
+    border-radius: 0;
+}
+
+.field input, .field button {
+    font-size: 2vh;
+    width: 82%;
+    height: 100%;
+    padding: 0 15px;
+    border-radius: 0;
+}
+
+.input .hide-show{
+    position: absolute;
+    top: 12.65vh;
+    right: 25px;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.field input:focus{
+    border-bottom: 2px solid;
+}
+
+.field button{
+    background-color: rgb(255, 119, 0);
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 100;
+    cursor: pointer;
+}
