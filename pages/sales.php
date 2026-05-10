@@ -19,66 +19,102 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-$products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0 ORDER BY product_name");
-
+// Process the sale when form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
-    $payment_amount = (int)$_POST['payment_amount'];
+    $payment_type = $_POST['payment_type'];
     $total_amount = (int)$_POST['total_amount'];
-    $change_amount = $payment_amount - $total_amount;
+    $customer_name = mysqli_real_escape_string($conn, $_POST['customer_name']);
     
-    if ($change_amount < 0) {
-        $_SESSION['error'] = "Insufficient payment!";
-        header("Location: sales.php");
-        exit();
+    if($payment_type == 'cash') {
+        $payment_amount = (int)$_POST['payment_amount'];
+        $change_amount = $payment_amount - $total_amount;
+        
+        if ($change_amount < 0) {
+            $_SESSION['error'] = "Insufficient payment!";
+            unset($_SESSION['sale_data']);
+            header("Location: sales.php");
+            exit();
+        }
+        
+        $amount_paid = $payment_amount;
+        $remaining_balance = 0;
+        $status = 'paid';
+        $due_date = NULL;  // FIXED: NULL without quotes
+        $downpayment = 0;
+        $payment_amount_db = $payment_amount;
+    } else {
+        // Credit payment
+        $downpayment = isset($_POST['downpayment']) ? (int)$_POST['downpayment'] : 0;
+        $due_date = $_POST['due_date'];
+        $amount_paid = $downpayment;
+        $remaining_balance = $total_amount - $downpayment;
+        $payment_amount_db = $downpayment;
+        $change_amount = 0;
+        
+        if($remaining_balance <= 0) {
+            $status = 'paid';
+        } elseif($downpayment > 0 && $remaining_balance > 0) {
+            $status = 'partial';
+        } else {
+            $status = 'unpaid';
+        }
     }
     
     $invoice_number = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
     
-    $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount) VALUES ('$invoice_number', $total_amount, $payment_amount, $change_amount)";
+    // Insert into sales - FIXED the due_date handling
+    if($due_date) {
+        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
+                  VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, '$due_date', '$status', '$customer_name')";
+    } else {
+        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
+                  VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, NULL, '$status', '$customer_name')";
+    }
     
     if (mysqli_query($conn, $query)) {
         $sales_id = mysqli_insert_id($conn);
         
+        // Record initial payment if credit with downpayment
+        if($payment_type == 'credit' && $downpayment > 0) {
+            mysqli_query($conn, "INSERT INTO credit_payments (sales_id, amount_paid, remarks) VALUES ($sales_id, $downpayment, 'Downpayment')");
+        }
+        
         $product_ids = $_POST['product_id'];
         $quantities = $_POST['quantity'];
-        $prices = $_POST['price'];
         
-        for ($x = 0; $x < count($product_ids); $x++) {
-            if (!empty($product_ids[$x]) && $quantities[$x] > 0) {
-                $product_id = (int)$product_ids[$x];
-                $quantity = (int)$quantities[$x];
-                $price = (int)$prices[$x];
+        for ($i = 0; $i < count($product_ids); $i++) {
+            if (!empty($product_ids[$i]) && $quantities[$i] > 0) {
+                $product_id = (int)$product_ids[$i];
+                $quantity = (int)$quantities[$i];
+                
+                $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $product_id");
+                $price_row = mysqli_fetch_assoc($price_query);
+                $price = $price_row['price'];
                 $subtotal = $quantity * $price;
                 
-                $item_query = "INSERT INTO sales_items (sales_id, product_id, quantity, price, subtotal) VALUES ($sales_id, $product_id, $quantity, $price, $subtotal)";
-                mysqli_query($conn, $item_query);
+                mysqli_query($conn, "INSERT INTO sales_items (sales_id, product_id, quantity, price, subtotal) 
+                                    VALUES ($sales_id, $product_id, $quantity, $price, $subtotal)");
                 
-                $update_stock = "UPDATE products SET quantity = quantity - $quantity WHERE product_id = $product_id";
-                mysqli_query($conn, $update_stock);
+                mysqli_query($conn, "UPDATE products SET quantity = quantity - $quantity WHERE product_id = $product_id");
             }
         }
         
+        unset($_SESSION['sale_data']);
         $_SESSION['message'] = "Sale completed! Invoice #: $invoice_number";
-        $_SESSION['last_invoice'] = $invoice_number;
         header("Location: receipt.php?invoice=$invoice_number");
+        exit();
+    } else {
+        $_SESSION['error'] = "Database error: " . mysqli_error($conn);
+        header("Location: sales.php");
         exit();
     }
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../resources/css/global.css">
-    <link rel="stylesheet" href="../resources/css/sales.css">
-    <title>New Sale - NICS Agri Supply</title>
-    <?php
 
+$products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0 ORDER BY product_name");
 
 $item_count = isset($_GET['items']) ? (int)$_GET['items'] : 1;
 if (isset($_GET['add_item'])) {
     $item_count = (int)$_GET['items'] + 1;
-
     $redirect = "sales.php?items=" . $item_count;
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $redirect .= "&preserve=1";
@@ -94,8 +130,6 @@ if (isset($_GET['remove_item'])) {
     exit();
 }
 
-$products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0");
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['complete_sale'])) {
     $_SESSION['sale_data'] = $_POST;
 }
@@ -103,56 +137,9 @@ if (isset($_GET['preserve']) && isset($_SESSION['sale_data'])) {
     $_POST = $_SESSION['sale_data'];
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
-    $payment_amount = (int)$_POST['payment_amount'];
-    $total_amount = (int)$_POST['total_amount'];
-    $change_amount = $payment_amount - $total_amount;
-    
-    if ($change_amount < 0) {
-        $_SESSION['error'] = "Insufficient payment!";
-        unset($_SESSION['sale_data']);
-        header("Location: sales.php?items=" . $item_count);
-        exit();
-    }
-    
-    $invoice_number = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
-    
-    $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount) VALUES ('$invoice_number', $total_amount, $payment_amount, $change_amount)";
-    
-    if (mysqli_query($conn, $query)) {
-        $sales_id = mysqli_insert_id($conn);
-        
-        $product_ids = $_POST['product_id'];
-        $quantities = $_POST['quantity'];
-        
-        for ($i = 0; $i < count($product_ids); $i++) {
-            if (!empty($product_ids[$i]) && $quantities[$i] > 0) {
-                $product_id = (int)$product_ids[$i];
-                $quantity = (int)$quantities[$i];
-                
-                $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $product_id");
-                $price_row = mysqli_fetch_assoc($price_query);
-                $price = $price_row['price'];
-                $subtotal = $quantity * $price;
-                
-                $item_query = "INSERT INTO sales_items (sales_id, product_id, quantity, price, subtotal) VALUES ($sales_id, $product_id, $quantity, $price, $subtotal)";
-                mysqli_query($conn, $item_query);
-                
-                $update_stock = "UPDATE products SET quantity = quantity - $quantity WHERE product_id = $product_id";
-                mysqli_query($conn, $update_stock);
-            }
-        }
-        
-        unset($_SESSION['sale_data']);
-        $_SESSION['message'] = "Sale completed! Invoice #: $invoice_number";
-        header("Location: receipt.php?invoice=$invoice_number");
-        exit();
-    }
-}
-
 $total = 0;
 $product_prices = [];
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && !isset($_POST['complete_sale'])) {
     for ($i = 0; $i < count($_POST['product_id']); $i++) {
         if (!empty($_POST['product_id'][$i]) && !empty($_POST['quantity'][$i]) && $_POST['quantity'][$i] > 0) {
             $pid = (int)$_POST['product_id'][$i];
@@ -167,11 +154,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
         }
     }
 }
+
+$selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] : 'cash';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resources/css/global.css">
+    <link rel="stylesheet" href="../resources/css/sales.css">
     <title>New Sale - NICS Agri Supply</title>
 </head>
 <body>
@@ -189,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
             <li><a href="sales.php">New Sale</a></li>
             <li><a href="sales_history.php">Sales History</a></li>
             <li><a href="reports.php">Reports</a></li>
+            <li><a href="credit_payments.php">Credit Payments</a></li>
         </ul>
     </nav>
     <hr>
@@ -198,7 +190,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
     <?php endif; ?>
     
     <div class="sales-content">
-    <form method="POST" action="?items=<?php echo $item_count; ?>">
+    <form method="POST" action="">
+        <div class="customer-section">
+            <label>Customer Name: </label>
+            <input type="text" name="customer_name" value="<?php echo isset($_POST['customer_name']) ? $_POST['customer_name'] : ''; ?>" required>
+        </div>
+        
+        <div class="payment-type-section">
+            <label>Payment Type: </label>
+            <select name="payment_type" id="payment_type" onchange="this.form.submit()">
+                <option value="cash" <?php echo $selected_payment_type == 'cash' ? 'selected' : ''; ?>>Cash</option>
+                <option value="credit" <?php echo $selected_payment_type == 'credit' ? 'selected' : ''; ?>>Credit/Utang</option>
+            </select>
+        </div>
+        
         <?php for($i = 1; $i <= $item_count; $i++): ?>
             <?php if($i > 1): ?>
                 <hr class="item-divider">
@@ -223,11 +228,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
             
             <div class="qty-wrap">
             <label class="qty-label">Quantity: </label>
-            <input type="number" name="quantity[]" min="1" class="qty-input" value="  <?php echo isset($_POST['quantity'][$i-1]) ? $_POST['quantity'][$i-1] : '1'; ?>">
+            <input type="number" name="quantity[]" min="1" class="qty-input" value="<?php echo isset($_POST['quantity'][$i-1]) ? $_POST['quantity'][$i-1] : '1'; ?>">
             </div>
 
             <?php if($i > 1): ?>
-                <a href="?remove_item=<?php echo $i; ?>&items=<?php echo $item_count; ?>" class="remove-link">Remove</a>
+                <a href="?remove_item=1&items=<?php echo $item_count; ?>" class="remove-link" onclick="return confirm('Remove this item?')">Remove</a>
             <?php endif; ?>
             </div>
         </div>
@@ -242,10 +247,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
         <h3>Total: ₱<?php echo number_format($total, 2); ?></h3>
         <input type="hidden" name="total_amount" value="<?php echo $total; ?>">
         
+        <?php if($selected_payment_type == 'cash'): ?>
         <table class="payment-table">
             <tr>
                 <td class="pay-label">Payment Amount: </td>
-                <td><input type="number" name="payment_amount" class="payment-input" value="<?php echo isset($_POST['payment_amount']) ? $_POST['payment_amount'] : ''; ?>"></td>
+                <td><input type="number" name="payment_amount" class="payment-input" value="<?php echo isset($_POST['payment_amount']) ? $_POST['payment_amount'] : ''; ?>" required></td>
             </tr>
             <tr>
                 <td class="pay-label">Change: </td>
@@ -258,25 +264,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
                     } elseif($payment > 0 && $change < 0) {
                         echo '<span style="color: red;">Insufficient payment! (Short by ₱' . number_format(abs($change), 2) . ')</span>';
                     } else {
-                        echo '₱0';
+                        echo '₱0.00';
                     }
                     ?>
                 </td>
             </tr>
+        <?php else: ?>
+        <table class="payment-table">
+            <tr>
+                <td class="pay-label">Downpayment (Optional): </td>
+                <td><input type="number" name="downpayment" class="payment-input" value="<?php echo isset($_POST['downpayment']) ? $_POST['downpayment'] : '0'; ?>"></td>
+            </tr>
+            <tr>
+                <td class="pay-label">Due Date: </td>
+                <td><input type="date" name="due_date" class="payment-input" value="<?php echo isset($_POST['due_date']) ? $_POST['due_date'] : date('Y-m-d', strtotime('+30 days')); ?>" required></td>
+            </tr>
+            <tr>
+                <td class="pay-label">Remaining Balance: </td>
+                <td class="change-value">
+                    <?php 
+                    $downpayment_val = isset($_POST['downpayment']) ? (int)$_POST['downpayment'] : 0;
+                    $remaining = $total - $downpayment_val;
+                    if($remaining > 0) {
+                        echo '<span style="color: red;">₱' . number_format($remaining, 2) . '</span>';
+                    } elseif($remaining <= 0) {
+                        echo '₱0.00 (Fully Paid)';
+                    } else {
+                        echo '₱0.00';
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php endif; ?>
             <tr>
                 <td colspan="2" class="sale-actions">
                     <input type="submit" name="calculate" value="Update Total" class="btn-update">
-                    <input type="button" value="Complete Sale" class="btn-complete" onclick="processSaleAndPrint()" onclick="return confirm('Complete this sale?')">
+                    <input type="submit" name="complete_sale" value="Complete Sale" class="btn-complete" onclick="return confirm('Complete this sale?');">
                 </td>
             </tr>
         </table>
         </div>
     </form>
         </div>
-    <iframe id="printFrame" style="display:none;"></iframe>
-    <script src="../resources/js/print.js"></script>
-    <script src="../resources/js/dropdown.js"></script>
 </body>
-</html>
-</head>
 </html>

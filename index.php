@@ -21,17 +21,19 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="resources/css/global.css">
     <link rel="stylesheet" href="resources/css/dashboard.css">
     <title>NICS Agri Supply - Dashboard</title>
 </head>
+
 <body>
     <div class="logout-session">
         Welcome, <?php echo $_SESSION['admin_username']; ?> | <a href="pages/logout.php">Logout</a>
     </div>
-    
+
     <header class="header-header">
         <h1>NICS AGRI SUPPLY</h1>
         <h2>Sales and Inventory Management System</h2>
@@ -43,6 +45,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             <li><a href="pages/sales.php">New Sale</a></li>
             <li><a href="pages/sales_history.php">Sales History</a></li>
             <li><a href="pages/reports.php">Reports</a></li>
+            <li><a href="pages/credit_payments.php">Credit Payments</a></li>
         </ul>
     </nav>
     <hr>
@@ -51,6 +54,23 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             <div class="db-table">
                 <h2>Dashboard</h2>
                 <?php
+                $total_cash_collected = 0;
+
+                $cash_sales = mysqli_query($conn, "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash'");
+                $cash_total = mysqli_fetch_assoc($cash_sales);
+                $total_cash_collected += ($cash_total['total'] ?? 0);
+
+                $credit_payments = mysqli_query($conn, "SELECT SUM(amount_paid) as total FROM credit_payments");
+                $payment_total = mysqli_fetch_assoc($credit_payments);
+                $total_cash_collected += ($payment_total['total'] ?? 0);
+                ?>
+
+                <tr>
+                    <th>Total Cash Collected</th>
+                    <td>₱<?php echo number_format($total_cash_collected, 2); ?></td>
+                </tr>
+                <?php
+
                 $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
                 $total_products = mysqli_fetch_assoc($result)['total'];
 
@@ -63,6 +83,24 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                 $result = mysqli_query($conn, "SELECT SUM(total_amount) as total_revenue FROM sales");
                 $total_revenue = mysqli_fetch_assoc($result)['total_revenue'];
                 ?>
+                <?php
+                $credit_summary = mysqli_query($conn, "SELECT COUNT(*) as unpaid_count, SUM(remaining_balance) as total_credit FROM sales WHERE payment_type = 'credit' AND remaining_balance > 0");
+                $credit_data = mysqli_fetch_assoc($credit_summary);
+                ?>
+
+                <h3>Credit Summary</h3>
+                <table>
+                    <tr>
+                        <th>Unpaid Credit Transactions</th>
+                        <td style="color: <?php echo ($credit_data['unpaid_count'] ?? 0) > 0 ? 'red' : 'green'; ?>;">
+                            <?php echo $credit_data['unpaid_count'] ?? 0; ?> transactions
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Total Outstanding Balance</th>
+                        <td style="color: red;">₱<?php echo number_format($credit_data['total_credit'] ?? 0, 2); ?></td>
+                    </tr>
+                </table>
 
                 <table>
                     <tr>
@@ -86,21 +124,21 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             <div class="low-stock-alert">
                 <?php if ($low_stock > 0): ?>
                     <h3 style="color: red;">⚠️ Low Stock Alert!</h3>
-                    <table border="1" cellpadding="10">
+                    <table>
                         <tr>
                             <th>Product Name</th>
                             <th>Current Stock</th>
                             <th>Low Stock Threshold</th>
                         </tr>
-                        <?php 
+                        <?php
                         $result = mysqli_query($conn, "SELECT * FROM products WHERE quantity <= low_stock_notif");
-                        while($row = mysqli_fetch_assoc($result)):
+                        while ($row = mysqli_fetch_assoc($result)):
                         ?>
-                        <tr>
-                            <td><?php echo $row['product_name']; ?></td>
-                            <td style="color: red;"><?php echo $row['quantity']; ?></td>
-                            <td><?php echo $row['low_stock_notif']; ?></td>
-                        </tr>
+                            <tr>
+                                <td><?php echo $row['product_name']; ?></td>
+                                <td style="color: red;"><?php echo $row['quantity']; ?></td>
+                                <td><?php echo $row['low_stock_notif']; ?></td>
+                            </tr>
                         <?php endwhile; ?>
                     </table>
                 <?php endif; ?>
@@ -108,4 +146,5 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         </div>
     </div>
 </body>
+
 </html>

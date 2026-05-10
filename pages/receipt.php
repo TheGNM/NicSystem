@@ -27,6 +27,21 @@ if (!$sale) {
     die("Invoice not found!");
 }
 
+// In receipt.php - ONLY CALCULATE FOR DISPLAY, NO UPDATE
+$payments_query = mysqli_query($conn, "SELECT SUM(amount_paid) as total_paid FROM credit_payments WHERE sales_id = " . $sale['sales_id']);
+$payments_total = mysqli_fetch_assoc($payments_query);
+$total_paid_from_payments = $payments_total['total_paid'] ?? 0;
+
+// Calculate for DISPLAY only
+if($sale['payment_type'] == 'credit') {
+    $total_paid = ($sale['amount_paid'] ?? 0) + $total_paid_from_payments;
+    $remaining_balance = $sale['total_amount'] - $total_paid;
+} else {
+    $total_paid = $sale['amount_paid'] ?? $sale['payment_amount'];
+    $remaining_balance = 0;
+}
+
+
 $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JOIN products p ON si.product_id = p.product_id WHERE si.sales_id = " . $sale['sales_id']);
 ?>
 <!DOCTYPE html>
@@ -47,6 +62,8 @@ $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JO
             <p><strong>OFFICIAL RECEIPT</strong></p>
             <p>Invoice #: <?php echo $sale['invoice_number']; ?></p>
             <p>Date: <?php echo $sale['sale_date']; ?></p>
+            <p>Customer: <?php echo htmlspecialchars($sale['customer_name']); ?></p>
+            <p>Payment Type: <?php echo strtoupper($sale['payment_type']); ?></p>
             <hr>
         </div>
 
@@ -66,19 +83,38 @@ $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JO
             </tr>
             <?php endwhile; ?>
             <tr><td colspan="3"><strong>TOTAL:</strong></td><td><strong>₱<?php echo number_format($sale['total_amount'], 2); ?></strong></td></tr>
+            
+            <?php if($sale['payment_type'] == 'cash'): ?>
             <tr><td colspan="3">Payment:</td><td>₱<?php echo number_format($sale['payment_amount'], 2); ?></td></tr>
             <tr><td colspan="3">Change:</td><td>₱<?php echo number_format($sale['change_amount'], 2); ?></td></tr>
+            <?php else: ?>
+            <tr><td colspan="3">Total Amount:</td><td>₱<?php echo number_format($sale['total_amount'], 2); ?></td></tr>
+            <tr><td colspan="3">Total Paid:</td><td style="color: green;">₱<?php echo number_format($sale['amount_paid'], 2); ?></td></tr>
+            <tr><td colspan="3">Remaining Balance:</td>
+                <td style="color: <?php echo ($sale['remaining_balance'] ?? 0) > 0 ? 'red' : 'green'; ?>;">
+                    ₱<?php echo number_format($sale['remaining_balance'] ?? 0, 2); ?>
+                </td>
+            </tr>
+            <?php if($sale['due_date']): ?>
+            <tr><td colspan="3">Due Date:</td><td><?php echo date('F d, Y', strtotime($sale['due_date'])); ?></td></tr>
+            <?php endif; ?>
+            <tr><td colspan="3">Status:</td><td><?php echo ucfirst($sale['status']); ?></td></tr>
+            <?php endif; ?>
         </table>
             
         <hr>
-        <div">
+        <div>
             <p>Thank you for your purchase!</p>
             <p>Visit us again at NICS AGRI SUPPLY</p>
+            <?php if($sale['payment_type'] == 'credit' && ($sale['remaining_balance'] ?? 0) > 0): ?>
+            <p style="color: red;">Please settle remaining balance on or before due date.</p>
+            <?php endif; ?>
             <br><br>
             <p>_______________________</p>
             <p>Authorized Signature</p>
         </div>
     </div>
     <input type="button" value="Print Receipt" onclick="window.print()">
+    <button><a href="sales.php">Back</a></button>
 </body>
 </html>

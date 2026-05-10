@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
     $low_stock_notif = (int)$_POST['low_stock_notif'];
     
     $query = "INSERT INTO products (product_name, price, quantity, low_stock_notif) 
-              VALUES ('$product_name', $price, $quantity, $low_stock_notif)";
+            VALUES ('$product_name', $price, $quantity, $low_stock_notif)";
     
     if (mysqli_query($conn, $query)) {
         $_SESSION['message'] = "Product added successfully!";
@@ -93,6 +93,7 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                 <li><a href="sales.php">New Sale</a></li>
                 <li><a href="sales_history.php">Sales History</a></li>
                 <li><a href="reports.php">Reports</a></li>
+                <li><a href="credit_payments.php">Credit Payments</a></li>
             </ul>
         </nav>
         <hr>

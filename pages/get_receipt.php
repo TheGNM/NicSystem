@@ -19,83 +19,81 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-if (isset($_GET['invoice'])) {
-    $invoice = $_GET['invoice'];
+$invoice = mysqli_real_escape_string($conn, $_GET['invoice']);
+$sale_result = mysqli_query($conn, "SELECT * FROM sales WHERE invoice_number = '$invoice'");
+$sale = mysqli_fetch_assoc($sale_result);
 
-    $stmt = $conn->prepare("SELECT * FROM sales WHERE invoice_number = ?");
-    $stmt->bind_param("s", $invoice);
-    $stmt->execute();
-    $sale = $stmt->get_result()->fetch_assoc();
+if (!$sale) {
+    die("Invoice not found!");
+}
 
-    if ($sale) {
-        $item_stmt = $conn->prepare("SELECT si.*, p.product_name FROM sales_items si JOIN products p ON si.product_id = p.product_id WHERE si.sales_id = ?");
-        $item_stmt->bind_param("i", $sale['sales_id']);
-        $item_stmt->execute();
-        $items = $item_stmt->get_result();
-        ?>
-
-        <div class="receipt-content" style="font-family: monospace; width: 300px; padding: 10px; border: 1px solid #ddd; background: #fff;">
-            <div style="text-align: center;">
-                <h2 style="margin-bottom: 0;">NICS AGRI SUPPLY</h2>
-                <p style="font-size: 12px;">Salapungan, San Rafael, Bulacan<br>
-                Tel: 09123456789</p>
-                <hr style="border-top: 1px dashed #000;">
-                <p><strong>OFFICIAL RECEIPT</strong></p>
-            </div>
-            
-            <p>Invoice #: <?php echo htmlspecialchars($sale['invoice_number']); ?></p>
-            <p>Date: <?php echo date('Y-m-d H:i', strtotime($sale['sale_date'])); ?></p>
-            <hr style="border-top: 1px dashed #000;">
-            
-            <table style="width: 100%; font-size: 13px; text-align: left;">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                        <th>Sub</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while($item = $items->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($item['product_name']); ?></td>
-                        <td><?php echo $item['quantity']; ?></td>
-                        <td><?php echo number_format($item['price'], 2); ?></td>
-                        <td><?php echo number_format($item['subtotal'], 2); ?></td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-            
-            <hr style="border-top: 1px dashed #000;">
-            <table style="width: 100%;">
-                <tr><td><strong>TOTAL:</strong></td><td style="text-align:right;"><strong>₱<?php echo number_format($sale['total_amount'], 2); ?></strong></td></tr>
-                <tr><td>Payment:</td><td style="text-align:right;">₱<?php echo number_format($sale['payment_amount'], 2); ?></td></tr>
-                <tr><td>Change:</td><td style="text-align:right;">₱<?php echo number_format($sale['change_amount'], 2); ?></td></tr>
-            </table>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <p>Thank you for your purchase!</p>
-                <p>Visit us again at NICS AGRI SUPPLY</p>
-                <br>
-                <p>_______________________</p>
-                <p>Authorized Signature</p>
-            </div>
-            
-            <style>
-                @media print {
-                    button { display: none; }
-                    body { background: none; }
-                    .receipt-content { border: none; width: 100%; }
-                }
-            </style>
-            <button onclick="window.print()" style="width: 100%; margin-top: 10px; cursor: pointer;">Print Receipt</button>
+$items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JOIN products p ON si.product_id = p.product_id WHERE si.sales_id = " . $sale['sales_id']);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resources/css/global.css">
+    <link rel="stylesheet" href="../resources/css/receipt.css">
+    <title>Receipt - <?php echo $invoice; ?></title>
+</head>
+<body>
+    <div class="receipt-content" id="printableTable">
+        <div>
+            <h2>NICS AGRI SUPPLY</h2>
+            <p>Salapungan, San Rafael, Bulacan</p>
+            <p>Tel: 09123456789</p>
+            <hr>
+            <p><strong>OFFICIAL RECEIPT</strong></p>
+            <p>Invoice #: <?php echo $sale['invoice_number']; ?></p>
+            <p>Date: <?php echo $sale['sale_date']; ?></p>
+            <p>Customer: <?php echo htmlspecialchars($sale['customer_name']); ?></p>
+            <p>Payment Type: <?php echo strtoupper($sale['payment_type']); ?></p>
+            <hr>
         </div>
 
-        <?php
-    } else {
-        echo "<p style='color:red; font-family: sans-serif;'>Invoice [".htmlspecialchars($invoice)."] not found in the sales record.</p>";
-    }
-}
-?>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+            <?php while($item = mysqli_fetch_assoc($items)): ?>
+            <tr>
+                <td><?php echo $item['product_name']; ?></td>
+                <td><?php echo $item['quantity']; ?></td>
+                <td>₱<?php echo number_format($item['price'], 2); ?></td>
+                <td>₱<?php echo number_format($item['subtotal'], 2); ?></td>
+            </tr>
+            <?php endwhile; ?>
+            <tr><td colspan="3"><strong>TOTAL:</strong></td><td><strong>₱<?php echo number_format($sale['total_amount'], 2); ?></strong></td></tr>
+            
+            <?php if($sale['payment_type'] == 'cash'): ?>
+            <tr><td colspan="3">Payment:</td><td>₱<?php echo number_format($sale['payment_amount'], 2); ?></td></tr>
+            <tr><td colspan="3">Change:</td><td>₱<?php echo number_format($sale['change_amount'], 2); ?></td></tr>
+            <?php else: ?>
+            <tr><td colspan="3">Amount Paid:</td><td>₱<?php echo number_format($sale['amount_paid'], 2); ?></td></tr>
+            <tr><td colspan="3">Remaining Balance:</td><td style="color: <?php echo $sale['remaining_balance'] > 0 ? 'red' : 'green'; ?>;">₱<?php echo number_format($sale['remaining_balance'], 2); ?></td></tr>
+            <?php if($sale['due_date']): ?>
+            <tr><td colspan="3">Due Date:</td><td><?php echo date('F d, Y', strtotime($sale['due_date'])); ?></td></tr>
+            <?php endif; ?>
+            <tr><td colspan="3">Status:</td><td><?php echo ucfirst($sale['status']); ?></td></tr>
+            <?php endif; ?>
+        </table>
+            
+        <hr>
+        <div>
+            <p>Thank you for your purchase!</p>
+            <p>Visit us again at NICS AGRI SUPPLY</p>
+            <?php if($sale['payment_type'] == 'credit' && $sale['remaining_balance'] > 0): ?>
+            <p style="color: red;">Please settle remaining balance on or before due date.</p>
+            <?php endif; ?>
+            <br><br>
+            <p>_______________________</p>
+            <p>Authorized Signature</p>
+        </div>
+    </div>
+    <input type="button" value="Print Receipt" onclick="window.print()">
+</body>
+</html>

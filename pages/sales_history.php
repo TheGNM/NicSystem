@@ -44,6 +44,7 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
             <li><a href="sales.php">New Sale</a></li>
             <li><a href="sales_history.php">Sales History</a></li>
             <li><a href="reports.php">Reports</a></li>
+            <li><a href="credit_payments.php">Credit Payments</a></li>
         </ul>
     </nav>
     <hr>
@@ -61,17 +62,25 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                                <tbody>
                     <?php while($row = mysqli_fetch_assoc($sales)): ?>
                     <tr>
                         <td><?php echo $row['invoice_number']; ?></td>
                         <td><?php echo $row['sale_date']; ?></td>
                         <td>₱<?php echo number_format($row['total_amount'], 2); ?></td>
-                        <td>₱<?php echo number_format($row['payment_amount'], 2); ?></td>
-                        <td>₱<?php echo number_format($row['change_amount'], 2); ?></td>
+                        <td><?php echo ucfirst($row['payment_type']); ?></td>
+                        <td style="color: <?php echo ($row['payment_type'] == 'credit' && $row['remaining_balance'] > 0) ? 'orange' : 'green'; ?>;">
+                            <?php 
+                            if($row['payment_type'] == 'credit') {
+                                echo 'Balance: ₱' . number_format($row['remaining_balance'], 2) . '<br>';
+                                echo '(' . ucfirst($row['status']) . ')';
+                            } else {
+                                echo '₱' . number_format($row['change_amount'], 2);
+                            }
+                            ?>
+                        </td>
                         <td>
                             <button><a href="receipt.php?invoice=<?php echo $row['invoice_number']; ?>" target="_blank">View Receipt</a></button>
-                            
                         </td>
                     </tr>
                     <?php endwhile; ?>
