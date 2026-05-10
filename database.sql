@@ -48,3 +48,18 @@ ADD CONSTRAINT sales_items_ibfk_2
 FOREIGN KEY (product_id) 
 REFERENCES products(product_id) 
 ON DELETE CASCADE;
+
+ALTER TABLE sales ADD COLUMN payment_type ENUM('cash', 'credit') DEFAULT 'cash';
+ALTER TABLE sales ADD COLUMN amount_paid DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE sales ADD COLUMN remaining_balance DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE sales ADD COLUMN due_date DATE NULL;
+ALTER TABLE sales ADD COLUMN status ENUM('paid', 'partial', 'unpaid') DEFAULT 'paid';
+
+CREATE TABLE credit_payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    sales_id INT NOT NULL,
+    amount_paid DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    remarks TEXT,
+    FOREIGN KEY (sales_id) REFERENCES sales(sales_id) ON DELETE CASCADE
+);
