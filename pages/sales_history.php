@@ -70,8 +70,8 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
                         <td>₱<?php echo number_format($row['payment_amount'], 2); ?></td>
                         <td>₱<?php echo number_format($row['change_amount'], 2); ?></td>
                         <td>
-                            <!-- <a href="receipt.php?invoice=<?php #echo $row['invoice_number']; ?>" target="_blank">View Receipt</a> -->
-                            <button type="button" onclick="loadReceipt('<?php echo $row['invoice_number']; ?>')">View Receipt</button>
+                            <button><a href="receipt.php?invoice=<?php echo $row['invoice_number']; ?>" target="_blank">View Receipt</a></button>
+                            
                         </td>
                     </tr>
                     <?php endwhile; ?>
