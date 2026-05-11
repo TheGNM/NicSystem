@@ -19,7 +19,6 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-// Process the sale when form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     $payment_type = $_POST['payment_type'];
     $total_amount = (int)$_POST['total_amount'];
@@ -39,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
         $amount_paid = $payment_amount;
         $remaining_balance = 0;
         $status = 'paid';
-        $due_date = NULL;  // FIXED: NULL without quotes
+        $due_date = NULL;
         $downpayment = 0;
         $payment_amount_db = $payment_amount;
     } else {
-        // Credit payment
+    
         $downpayment = isset($_POST['downpayment']) ? (int)$_POST['downpayment'] : 0;
         $due_date = $_POST['due_date'];
         $amount_paid = $downpayment;
@@ -62,19 +61,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     
     $invoice_number = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
     
-    // Insert into sales - FIXED the due_date handling
     if($due_date) {
         $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
-                  VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, '$due_date', '$status', '$customer_name')";
+                VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, '$due_date', '$status', '$customer_name')";
     } else {
         $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
-                  VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, NULL, '$status', '$customer_name')";
+                VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, NULL, '$status', '$customer_name')";
     }
     
     if (mysqli_query($conn, $query)) {
         $sales_id = mysqli_insert_id($conn);
         
-        // Record initial payment if credit with downpayment
         if($payment_type == 'credit' && $downpayment > 0) {
             mysqli_query($conn, "INSERT INTO credit_payments (sales_id, amount_paid, remarks) VALUES ($sales_id, $downpayment, 'Downpayment')");
         }

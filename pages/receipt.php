@@ -27,12 +27,10 @@ if (!$sale) {
     die("Invoice not found!");
 }
 
-// In receipt.php - ONLY CALCULATE FOR DISPLAY, NO UPDATE
 $payments_query = mysqli_query($conn, "SELECT SUM(amount_paid) as total_paid FROM credit_payments WHERE sales_id = " . $sale['sales_id']);
 $payments_total = mysqli_fetch_assoc($payments_query);
 $total_paid_from_payments = $payments_total['total_paid'] ?? 0;
 
-// Calculate for DISPLAY only
 if($sale['payment_type'] == 'credit') {
     $total_paid = ($sale['amount_paid'] ?? 0) + $total_paid_from_payments;
     $remaining_balance = $sale['total_amount'] - $total_paid;
