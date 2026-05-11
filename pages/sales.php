@@ -20,6 +20,35 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 }
 //if nagcomplete sale ka na
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
+    
+    //validation para hindi mas marami ang order kaysa sa inventory
+    $stock_errors = [];
+    $product_ids_validation = $_POST['product_id'];
+    $quantities_validation = $_POST['quantity'];
+    
+    for ($x = 0; $x < count($product_ids_validation); $x++) {
+        if (!empty($product_ids_validation[$x]) && $quantities_validation[$x] > 0) {
+            $pid = (int)$product_ids_validation[$x];
+            $requested_qty = (int)$quantities_validation[$x];
+            
+            // Get current stock for this product
+            $stock_query = mysqli_query($conn, "SELECT product_name, quantity FROM products WHERE product_id = $pid");
+            $stock_row = mysqli_fetch_assoc($stock_query);
+            
+            if ($stock_row && $requested_qty > $stock_row['quantity']) {
+                $stock_errors[] = "{$stock_row['product_name']}: Requested {$requested_qty}, Only {$stock_row['quantity']} in stock";
+            }
+        }
+    }
+    
+    // If there are stock errors, stop the sale and show error
+    if (!empty($stock_errors)) {
+        $_SESSION['error'] = "Cannot complete sale - Insufficient stock: " . implode(", ", $stock_errors);
+        header("Location: sales.php");
+        exit();
+    }
+    //
+    
     $payment_type = $_POST['payment_type'];
     $total_amount = (int)$_POST['total_amount'];
     $customer_name = mysqli_real_escape_string($conn, $_POST['customer_name']);
@@ -136,21 +165,39 @@ if (isset($_GET['remove_item'])) {
 
 $total = 0;
 $product_prices = [];
-//if update total 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && !isset($_POST['complete_sale'])) {
-    //calculate the product quantity, prices, total
+
+// Check if Update Total button was clicked
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['calculate']) && !isset($_POST['complete_sale'])) {
+    $has_error = false;
+    $error_message = "";
+    $total = 0;
+    $product_prices = [];
+    
     for ($x = 0; $x < count($_POST['product_id']); $x++) {
         if (!empty($_POST['product_id'][$x]) && !empty($_POST['quantity'][$x]) && $_POST['quantity'][$x] > 0) {
             $pid = (int)$_POST['product_id'][$x];
-            if (!isset($product_prices[$pid])) {
-                $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $pid");
-                $price_row = mysqli_fetch_assoc($price_query);
-                $product_prices[$pid] = $price_row['price'];
-            }
-            $price = $product_prices[$pid];
             $qty = (int)$_POST['quantity'][$x];
-            $total += $qty * $price;
+            
+            // Get current stock
+            $stock_query = mysqli_query($conn, "SELECT price, quantity, product_name FROM products WHERE product_id = $pid");
+            $stock_row = mysqli_fetch_assoc($stock_query);
+            //validation para hindi mas marami ang order kaysa sa inventory
+            if ($stock_row) {
+                if ($qty > $stock_row['quantity']) {
+                    $has_error = true;
+                    $error_message .= "{$stock_row['product_name']}: Requested {$qty}, Only {$stock_row['quantity']} in stock. ";
+                }
+                $product_prices[$pid] = $stock_row['price'];
+                $total += $qty * $stock_row['price'];
+            }
         }
+    }
+    
+    if ($has_error) {
+        $_SESSION['error'] = $error_message;
+        // Redirect to clear the form or stay on same page
+        header("Location: sales.php");
+        exit();
     }
 }
 //if cash ang payment, this is the output
