@@ -54,6 +54,7 @@ ALTER TABLE sales ADD COLUMN amount_paid DECIMAL(10,2) DEFAULT 0;
 ALTER TABLE sales ADD COLUMN remaining_balance DECIMAL(10,2) DEFAULT 0;
 ALTER TABLE sales ADD COLUMN due_date DATE NULL;
 ALTER TABLE sales ADD COLUMN status ENUM('paid', 'partial', 'unpaid') DEFAULT 'paid';
+ALTER TABLE sales ADD COLUMN customer_name VARCHAR(250) NOT NULL;
 
 CREATE TABLE credit_payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,7 +64,7 @@ CREATE TABLE credit_payments (
     remarks TEXT,
     FOREIGN KEY (sales_id) REFERENCES sales(sales_id) ON DELETE CASCADE
 );
-
+<--for changing username and pass-->
 UPDATE admin_users 
 SET username ='admin',
 password = MD5('admin123') 
