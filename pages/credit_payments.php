@@ -19,17 +19,14 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-// Process payment collection - ONLY RUNS WHEN FORM IS SUBMITTED
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
     $sales_id = (int)$_POST['sales_id'];
     $payment_amount = (int)$_POST['payment_amount'];
     $remarks = mysqli_real_escape_string($conn, $_POST['remarks']);
     
-    // Get current sale info
     $sale_query = mysqli_query($conn, "SELECT * FROM sales WHERE sales_id = $sales_id");
     $sale = mysqli_fetch_assoc($sale_query);
     
-    // Check if payment is valid
     if ($payment_amount <= 0) {
         $_SESSION['error'] = "Payment amount must be greater than zero!";
         header("Location: credit_payments.php");
@@ -42,7 +39,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
         exit();
     }
     
-    // Calculate new values
     $new_balance = $sale['remaining_balance'] - $payment_amount;
     $new_amount_paid = $sale['amount_paid'] + $payment_amount;
     
@@ -53,10 +49,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
         $status = 'partial';
     }
     
-    // UPDATE DATABASE - THIS ONLY HAPPENS WHEN YOU SUBMIT THE PAYMENT FORM
     mysqli_query($conn, "UPDATE sales SET remaining_balance = $new_balance, amount_paid = $new_amount_paid, status = '$status' WHERE sales_id = $sales_id");
     
-    // Record payment in credit_payments table
     mysqli_query($conn, "INSERT INTO credit_payments (sales_id, amount_paid, remarks) VALUES ($sales_id, $payment_amount, '$remarks')");
     
     $_SESSION['message'] = "Payment recorded successfully! Remaining balance: ₱" . number_format($new_balance, 2);
@@ -64,10 +58,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
     exit();
 }
 
-// Get all credit transactions with remaining balance
 $credit_sales = mysqli_query($conn, "SELECT * FROM sales WHERE payment_type = 'credit' AND remaining_balance > 0 ORDER BY due_date ASC");
 
-// Get payment history for display only
 $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.customer_name, s.remaining_balance FROM credit_payments cp JOIN sales s ON cp.sales_id = s.sales_id ORDER BY cp.payment_date DESC LIMIT 50");
 ?>
 <!DOCTYPE html>
@@ -146,7 +138,7 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
                                 <input type="text" name="remarks" placeholder="Remarks">
                                 <input type="submit" name="record_payment" value="Pay" class="btn-pay">
                             </form>
-                         </td>
+                        </td>
                     </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
