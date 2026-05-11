@@ -38,7 +38,6 @@ if ($report_type == 'daily') {
     $query = "SELECT * FROM sales WHERE DATE(sale_date) BETWEEN '$date_from' AND '$date_to' ORDER BY sale_date DESC";
     $title = "Sales Report - " . date('F d', strtotime($date_from)) . " to " . date('F d, Y', strtotime($date_to));
     
-    // Cash sales revenue
     $cash_sales_query = "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash' AND DATE(sale_date) BETWEEN '$date_from' AND '$date_to'";
     
     $payment_query = "SELECT cp.*, s.invoice_number, s.customer_name FROM credit_payments cp 
@@ -193,7 +192,6 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
         
         <br>
         
-        <!-- CREDIT PAYMENTS COLLECTED THIS PERIOD -->
         <?php if(count($payments_list) > 0): ?>
         <h4>Credit Payments Collected This Period</h4>
         <table>
@@ -228,7 +226,6 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
         <br>
         <?php endif; ?>
         
-        <!-- ALL TRANSACTIONS DETAILS -->
         <h4>All Transactions</h4>
         <table>
             <thead>
@@ -269,7 +266,6 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
         
         <hr>
         
-        <!-- CREDIT SUMMARY -->
         <h4>Credit/Utang Summary for this Period</h4>
         <table>
             <tr>
