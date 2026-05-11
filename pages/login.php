@@ -80,6 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </section>
     </div>
-    <script src="../resources/js/script.js"></script>
+    <script src="../resources/js/passwordhide.js"></script>
 </body>
 </html>
