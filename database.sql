@@ -64,7 +64,7 @@ CREATE TABLE credit_payments (
     remarks TEXT,
     FOREIGN KEY (sales_id) REFERENCES sales(sales_id) ON DELETE CASCADE
 );
-<--for changing username and pass-->
+--for changing username and pass
 UPDATE admin_users 
 SET username ='admin',
 password = MD5('admin123') 
