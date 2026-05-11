@@ -55,7 +55,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                 <h2>Dashboard</h2>
                 <?php
                 $total_cash_collected = 0;
-
+                
                 $cash_sales = mysqli_query($conn, "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash'");
                 $cash_total = mysqli_fetch_assoc($cash_sales);
                 $total_cash_collected += ($cash_total['total'] ?? 0);

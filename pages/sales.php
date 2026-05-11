@@ -18,16 +18,16 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     header("Location: login.php");
     exit();
 }
-
+//if nagcomplete sale ka na
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     $payment_type = $_POST['payment_type'];
     $total_amount = (int)$_POST['total_amount'];
     $customer_name = mysqli_real_escape_string($conn, $_POST['customer_name']);
-    
+    //pag cash payment
     if($payment_type == 'cash') {
         $payment_amount = (int)$_POST['payment_amount'];
         $change_amount = $payment_amount - $total_amount;
-        
+        //output if less yung bayad ni customer
         if ($change_amount < 0) {
             $_SESSION['error'] = "Insufficient payment!";
             unset($_SESSION['sale_data']);
@@ -41,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
         $due_date = NULL;
         $downpayment = 0;
         $payment_amount_db = $payment_amount;
-    } else {
+    }
+    //if credit or utang mode of payment
+    else {
     
         $downpayment = isset($_POST['downpayment']) ? (int)$_POST['downpayment'] : 0;
         $due_date = $_POST['due_date'];
@@ -60,12 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
     }
     
     $invoice_number = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
-    
+    //if credits papasok database with due date
     if($due_date) {
-        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
+        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name)
                 VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, '$due_date', '$status', '$customer_name')";
-    } else {
-        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name) 
+    }
+    //if cash, null ang due dat ofc
+    else {
+        $query = "INSERT INTO sales (invoice_number, total_amount, payment_amount, change_amount, payment_type, amount_paid, remaining_balance, due_date, status, customer_name)
                 VALUES ('$invoice_number', $total_amount, $payment_amount_db, $change_amount, '$payment_type', $amount_paid, $remaining_balance, NULL, '$status', '$customer_name')";
     }
     
@@ -78,48 +82,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete_sale'])) {
         
         $product_ids = $_POST['product_id'];
         $quantities = $_POST['quantity'];
-        
-        for ($i = 0; $i < count($product_ids); $i++) {
-            if (!empty($product_ids[$i]) && $quantities[$i] > 0) {
-                $product_id = (int)$product_ids[$i];
-                $quantity = (int)$quantities[$i];
-                
+        //loop for quantity, total price ng mga nabili ng costumer
+        for ($x = 0; $x < count($product_ids); $x++) {
+            if (!empty($product_ids[$x]) && $quantities[$x] > 0) {
+                $product_id = (int)$product_ids[$x];
+                $quantity = (int)$quantities[$x];
+                // pasok databasse para macheck mga prices ng items
                 $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $product_id");
                 $price_row = mysqli_fetch_assoc($price_query);
                 $price = $price_row['price'];
                 $subtotal = $quantity * $price;
-                
+                //papasok ang sales sa database after macalculate lahat
                 mysqli_query($conn, "INSERT INTO sales_items (sales_id, product_id, quantity, price, subtotal) 
                                     VALUES ($sales_id, $product_id, $quantity, $price, $subtotal)");
-                
+                //para maupdate yung quantity at ibawas na ang nabili
                 mysqli_query($conn, "UPDATE products SET quantity = quantity - $quantity WHERE product_id = $product_id");
             }
         }
-        
+        //shoqw that sale is completred
         unset($_SESSION['sale_data']);
         $_SESSION['message'] = "Sale completed! Invoice #: $invoice_number";
         header("Location: receipt.php?invoice=$invoice_number");
         exit();
-    } else {
+    }
+    //if somehow may error sa transaction, output den syempre
+    else {
         $_SESSION['error'] = "Database error: " . mysqli_error($conn);
         header("Location: sales.php");
         exit();
     }
 }
-
+//get lahat ng available na items sa inv
 $products = mysqli_query($conn, "SELECT * FROM products WHERE quantity > 0 ORDER BY product_name");
-
+//item number
 $item_count = isset($_GET['items']) ? (int)$_GET['items'] : 1;
+//add item kapag bibili ng higit sa isa ang customer
 if (isset($_GET['add_item'])) {
     $item_count = (int)$_GET['items'] + 1;
     $redirect = "sales.php?items=" . $item_count;
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $redirect .= "&preserve=1";
-    }
+
     header("Location: " . $redirect);
     exit();
 }
-
+//remove item kapag nagbago isip ng customer
 if (isset($_GET['remove_item'])) {
     $item_count = (int)$_GET['items'] - 1;
     if ($item_count < 1) $item_count = 1;
@@ -127,31 +132,28 @@ if (isset($_GET['remove_item'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['complete_sale'])) {
-    $_SESSION['sale_data'] = $_POST;
-}
-if (isset($_GET['preserve']) && isset($_SESSION['sale_data'])) {
-    $_POST = $_SESSION['sale_data'];
-}
+
 
 $total = 0;
 $product_prices = [];
+//if update total 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && !isset($_POST['complete_sale'])) {
-    for ($i = 0; $i < count($_POST['product_id']); $i++) {
-        if (!empty($_POST['product_id'][$i]) && !empty($_POST['quantity'][$i]) && $_POST['quantity'][$i] > 0) {
-            $pid = (int)$_POST['product_id'][$i];
+    //calculate the product quantity, prices, total
+    for ($x = 0; $x < count($_POST['product_id']); $x++) {
+        if (!empty($_POST['product_id'][$x]) && !empty($_POST['quantity'][$x]) && $_POST['quantity'][$x] > 0) {
+            $pid = (int)$_POST['product_id'][$x];
             if (!isset($product_prices[$pid])) {
                 $price_query = mysqli_query($conn, "SELECT price FROM products WHERE product_id = $pid");
                 $price_row = mysqli_fetch_assoc($price_query);
                 $product_prices[$pid] = $price_row['price'];
             }
             $price = $product_prices[$pid];
-            $qty = (int)$_POST['quantity'][$i];
+            $qty = (int)$_POST['quantity'][$x];
             $total += $qty * $price;
         }
     }
 }
-
+//if cash ang payment, this is the output
 $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] : 'cash';
 ?>
 <!DOCTYPE html>
@@ -183,7 +185,7 @@ $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] 
     <hr>
 
     <?php if(isset($_SESSION['error'])): ?>
-        <p style="color: red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+        <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     
     <div class="sales-content">
@@ -266,7 +268,10 @@ $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] 
                     ?>
                 </td>
             </tr>
-        <?php else: ?>
+        <?php 
+    
+    //if credits, this is the output
+    else: ?>
         <table class="payment-table">
             <tr>
                 <td class="pay-label">Downpayment (Optional): </td>

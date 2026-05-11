@@ -18,41 +18,48 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     header("Location: login.php");
     exit();
 }
-
+//holds and check if the report type is same date or ranged
 $report_type = $_GET['report_type'] ?? 'daily';
 $date_from = $_GET['date_from'] ?? date('Y-m-d');
 $date_to = $_GET['date_to'] ?? date('Y-m-d');
-
+//if daily
 if ($report_type == 'daily') {
-
+    //query to get the infos on the day the admin wanted.
     $query = "SELECT * FROM sales WHERE DATE(sale_date) = '$date_from' ORDER BY sale_date DESC";
+    //holds the title for the browser presentation
     $title = "Daily Sales Report - " . date('F d, Y', strtotime($date_from));
-    
+    //same sa naunang query pero for cash payment
     $cash_sales_query = "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash' AND DATE(sale_date) = '$date_from'";
-    
+    //same din but para sa credits naman
     $payment_query = "SELECT cp.*, s.invoice_number, s.customer_name FROM credit_payments cp 
                     JOIN sales s ON cp.sales_id = s.sales_id 
-                    WHERE DATE(cp.payment_date) = '$date_from' 
-                    ORDER BY cp.payment_date DESC";
-} else {
-    $query = "SELECT * FROM sales WHERE DATE(sale_date) BETWEEN '$date_from' AND '$date_to' ORDER BY sale_date DESC";
-    $title = "Sales Report - " . date('F d', strtotime($date_from)) . " to " . date('F d, Y', strtotime($date_to));
-    
-    $cash_sales_query = "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash' AND DATE(sale_date) BETWEEN '$date_from' AND '$date_to'";
-    
-    $payment_query = "SELECT cp.*, s.invoice_number, s.customer_name FROM credit_payments cp 
-                    JOIN sales s ON cp.sales_id = s.sales_id 
-                    WHERE DATE(cp.payment_date) BETWEEN '$date_from' AND '$date_to' 
+                    WHERE DATE(cp.payment_date) = '$date_from'
                     ORDER BY cp.payment_date DESC";
 }
 
+//if not daily or if ranged
+else {
+    //same lang din sa nauna bur ranged yung date
+    $query = "SELECT * FROM sales WHERE DATE(sale_date) BETWEEN '$date_from' AND '$date_to' ORDER BY sale_date DESC";
+    $title = "Sales Report - " . date('F d', strtotime($date_from)) . " to " . date('F d, Y', strtotime($date_to));
+    //same lang din sa una but ranged and for cash only
+    $cash_sales_query = "SELECT SUM(total_amount) as total FROM sales WHERE payment_type = 'cash' AND DATE(sale_date) BETWEEN '$date_from' AND '$date_to'";
+    //same lang din sa una but for credits and ranged date
+    $payment_query = "SELECT cp.*, s.invoice_number, s.customer_name FROM credit_payments cp
+                    JOIN sales s ON cp.sales_id = s.sales_id 
+                    WHERE DATE(cp.payment_date) BETWEEN '$date_from' AND '$date_to'
+                    ORDER BY cp.payment_date DESC";
+}
+//holds the vaslue ng ff query
 $cash_result = mysqli_query($conn, $cash_sales_query);
 $cash_sales_total = mysqli_fetch_assoc($cash_result)['total'] ?? 0;
-
 $payments_result = mysqli_query($conn, $payment_query);
+
 $total_credit_payments = 0;
+//holds the list for the list of credit paymnents
 $payments_list = [];
 if ($payments_result) {
+    //calculate the total credit payments
     while($payment = mysqli_fetch_assoc($payments_result)) {
         $total_credit_payments += $payment['amount_paid'];
         $payments_list[] = $payment;
@@ -61,26 +68,35 @@ if ($payments_result) {
 
 $total_revenue = $cash_sales_total + $total_credit_payments;
 
-
+//get all the sales
 $sales = mysqli_query($conn, $query);
 $total_sales_amount = 0;
+//cahnages the query a lil bit
 $total_sales_result = mysqli_query($conn, str_replace("*", "SUM(total_amount) as total", $query));
+//get the sum of the sales in the databse
 $total_sales_sum = mysqli_fetch_assoc($total_sales_result);
+//holds the sum
 $total_sales_amount = $total_sales_sum['total'] ?? 0;
+//query to get the summary of credit payments in the db
 
-$credit_summary_query = "SELECT 
+$credit_summary_query = "SELECT
     COUNT(*) as total_credit_transactions,
     SUM(total_amount) as total_credit_amount,
     SUM(remaining_balance) as total_outstanding
     FROM sales WHERE payment_type = 'credit'";
+
 if ($report_type == 'daily') {
     $credit_summary_query .= " AND DATE(sale_date) = '$date_from'";
-} else {
+}
+
+else {
     $credit_summary_query .= " AND DATE(sale_date) BETWEEN '$date_from' AND '$date_to'";
 }
+//gets the credit summary on db
 $credit_summary_result = mysqli_query($conn, $credit_summary_query);
+//holds the summary
 $credit_summary = mysqli_fetch_assoc($credit_summary_result);
-
+//gets and hold the products on the inventory
 $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC");
 ?>
 <!DOCTYPE html>

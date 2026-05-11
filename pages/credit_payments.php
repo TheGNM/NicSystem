@@ -18,7 +18,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     header("Location: login.php");
     exit();
 }
-
+//pag magbabayad ng otang
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
     $sales_id = (int)$_POST['sales_id'];
     $payment_amount = (int)$_POST['payment_amount'];
@@ -48,18 +48,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['record_payment'])) {
     } else {
         $status = 'partial';
     }
-    
+    //updates databse to inform na nakapagbayad na ng utang or nakapagless na ng utang
     mysqli_query($conn, "UPDATE sales SET remaining_balance = $new_balance, amount_paid = $new_amount_paid, status = '$status' WHERE sales_id = $sales_id");
-    
+    //papasok din sa credit payments on databse to update
     mysqli_query($conn, "INSERT INTO credit_payments (sales_id, amount_paid, remarks) VALUES ($sales_id, $payment_amount, '$remarks')");
-    
+    //outputs message para malaman na pumasok na ang payment into the database
     $_SESSION['message'] = "Payment recorded successfully! Remaining balance: ₱" . number_format($new_balance, 2);
     header("Location: credit_payments.php");
     exit();
 }
-
+//gets all the utang o credits sa database na may remaining balance pa
 $credit_sales = mysqli_query($conn, "SELECT * FROM sales WHERE payment_type = 'credit' AND remaining_balance > 0 ORDER BY due_date ASC");
-
+//holds the things to display the history of payment ng credits
 $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.customer_name, s.remaining_balance FROM credit_payments cp JOIN sales s ON cp.sales_id = s.sales_id ORDER BY cp.payment_date DESC LIMIT 50");
 ?>
 <!DOCTYPE html>
@@ -91,11 +91,11 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
     <hr>
     
     <?php if(isset($_SESSION['message'])): ?>
-        <p style="color: green; background: #dff0d8; padding: 10px;"><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
+        <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
     <?php endif; ?>
     
     <?php if(isset($_SESSION['error'])): ?>
-        <p style="color: red; background: #f2dede; padding: 10px;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+        <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     
     <div class="credit-content">
@@ -115,6 +115,7 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
                 </tr>
             </thead>
             <tbody>
+                //shows the remaining utang kung meron
                 <?php if(mysqli_num_rows($credit_sales) > 0): ?>
                     <?php while($row = mysqli_fetch_assoc($credit_sales)): 
                         $is_overdue = ($row['due_date'] && strtotime($row['due_date']) < time());
@@ -162,13 +163,14 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
                 </tr>
             </thead>
             <tbody>
+                //shows the table of the credit payment history
                 <?php if(mysqli_num_rows($payment_history) > 0): ?>
                     <?php while($payment = mysqli_fetch_assoc($payment_history)): ?>
                     <tr>
                         <td><?php echo $payment['payment_date']; ?></td>
                         <td><?php echo $payment['invoice_number']; ?></td>
                         <td><?php echo htmlspecialchars($payment['customer_name']); ?></td>
-                        <td style="color: green;">₱<?php echo number_format($payment['amount_paid'], 2); ?></td>
+                        <td>₱<?php echo number_format($payment['amount_paid'], 2); ?></td>
                         <td>₱<?php echo number_format($payment['remaining_balance'], 2); ?></td>
                         <td><?php echo htmlspecialchars($payment['remarks']); ?></td>
                     </tr>

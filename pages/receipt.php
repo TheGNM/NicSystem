@@ -26,11 +26,11 @@ $sale = mysqli_fetch_assoc($sale_result);
 if (!$sale) {
     die("Invoice not found!");
 }
-
+//calculates the total paid credits 
 $payments_query = mysqli_query($conn, "SELECT SUM(amount_paid) as total_paid FROM credit_payments WHERE sales_id = " . $sale['sales_id']);
 $payments_total = mysqli_fetch_assoc($payments_query);
 $total_paid_from_payments = $payments_total['total_paid'] ?? 0;
-
+//if credit, calaculate the remaining balance if meron
 if($sale['payment_type'] == 'credit') {
     $total_paid = ($sale['amount_paid'] ?? 0) + $total_paid_from_payments;
     $remaining_balance = $sale['total_amount'] - $total_paid;
@@ -39,7 +39,7 @@ if($sale['payment_type'] == 'credit') {
     $remaining_balance = 0;
 }
 
-
+//holds the infos of the biniling product inside the databse
 $items = mysqli_query($conn, "SELECT si.*, p.product_name FROM sales_items si JOIN products p ON si.product_id = p.product_id WHERE si.sales_id = " . $sale['sales_id']);
 ?>
 <!DOCTYPE html>

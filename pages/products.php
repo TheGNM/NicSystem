@@ -18,13 +18,13 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     header("Location: login.php");
     exit();
 }
-
+//if mag add ng product si admin
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
     $product_name = mysqli_real_escape_string($conn, $_POST['product_name']);
     $price = (int)$_POST['price'];
     $quantity = (int)$_POST['quantity'];
     $low_stock_notif = (int)$_POST['low_stock_notif'];
-    
+    //ipasok sa database ang new product
     $query = "INSERT INTO products (product_name, price, quantity, low_stock_notif) 
             VALUES ('$product_name', $price, $quantity, $low_stock_notif)";
     
@@ -36,14 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
     header("Location: products.php");
     exit();
 }
-
+//if mag update ng product si admin
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     $product_id = (int)$_POST['product_id'];
     $product_name = mysqli_real_escape_string($conn, $_POST['product_name']);
     $price = (int)$_POST['price'];
     $quantity = (int)$_POST['quantity'];
     $low_stock_notif = (int)$_POST['low_stock_notif'];
-    
+    //update the database as well
     $query = "UPDATE products SET product_name='$product_name', price=$price, quantity=$quantity, low_stock_notif=$low_stock_notif WHERE product_id=$product_id";
     
     if (mysqli_query($conn, $query)) {
@@ -54,9 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     header("Location: products.php");
     exit();
 }
-
+//if magdelete ng item or product si admin
 if (isset($_GET['delete'])) {
     $product_id = (int)$_GET['delete'];
+    //magdelete din sa database syempre
     $query = "DELETE FROM products WHERE product_id=$product_id";
     
     if (mysqli_query($conn, $query)) {
@@ -67,7 +68,7 @@ if (isset($_GET['delete'])) {
     header("Location: products.php");
     exit();
 }
-
+//holds the products inside the database
 $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC");
 ?>
 <!DOCTYPE html>
@@ -121,6 +122,7 @@ $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC
                         </tr>
                     </thead>
                     <tbody>
+                        //shows the products available to edit
                     <?php while($row = mysqli_fetch_assoc($products)): ?>
                     <form method="POST" action="">
                         <tr>

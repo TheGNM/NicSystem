@@ -63,6 +63,7 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
                     </tr>
                 </thead>
                                 <tbody>
+                    //prints out he database contents
                     <?php while($row = mysqli_fetch_assoc($sales)): ?>
                     <tr>
                         <td><?php echo $row['invoice_number']; ?></td>
