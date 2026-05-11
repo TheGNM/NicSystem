@@ -60,10 +60,10 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
                         <th>Payment</th>
                         <th>Change</th>
                         <th>Actions</th>
-                    </tr>
+                    <tr>
                 </thead>
-                                <tbody>
-                    //prints out he database contents
+                        <tbody>
+                    
                     <?php while($row = mysqli_fetch_assoc($sales)): ?>
                     <tr>
                         <td><?php echo $row['invoice_number']; ?></td>
