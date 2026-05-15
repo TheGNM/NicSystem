@@ -84,11 +84,11 @@ FOREIGN KEY (category_id) REFERENCES categories(category_id)
 ON DELETE SET NULL;
 
 INSERT INTO categories (category_name) VALUES 
-    ('Fertilizers'),
-    ('Pesticides'),
-    ('Seeds'),
-    ('Tools & Equipment'),
-    ('Animal Feeds');
+   ('Fertilizers'),
+   ('Pesticides'),
+   ('Seeds'),
+   ('Tools & Equipment'),
+   ('Animal Feeds');
 ON DUPLICATE KEY UPDATE category_name = category_name;
 
 UPDATE products SET category_id = (SELECT category_id FROM categories WHERE category_name = 'Other Supplies' LIMIT 1) 
@@ -106,8 +106,9 @@ CREATE TABLE inventory_log (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
---for changing username and pass
---UPDATE admin_users 
---SET username ='admin',
---password = MD5('admin123') 
---WHERE username ='raven'
+
+/* for changing username and pass
+UPDATE admin_users 
+SET username ='admin',
+password = MD5('admin123') 
+WHERE username ='raven' */
