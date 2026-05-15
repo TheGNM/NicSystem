@@ -88,10 +88,6 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
                 </tbody>
             </table>
         </div>
-        <div class="receipt-view">
-            <iframe id="receiptFrame" src="about:blank"></iframe>
-        </div>
     </div>
-    <script src="../resources/js/view.js"></script>
 </body>
 </html>

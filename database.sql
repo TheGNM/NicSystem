@@ -66,11 +66,11 @@ CREATE TABLE credit_payments (
 );
 
 ALTER TABLE products 
-ADD COLUMN category_id INT NULL,
-ADD COLUMN unit VARCHAR(50) DEFAULT 'pcs',
-ADD COLUMN reorder_point INT DEFAULT 5,
-ADD COLUMN location VARCHAR(100) NULL,
-ADD COLUMN last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+    ADD COLUMN category_id INT NULL,
+    ADD COLUMN unit VARCHAR(50) DEFAULT 'pcs',
+    ADD COLUMN reorder_point INT DEFAULT 5,
+    ADD COLUMN location VARCHAR(100) NULL,
+    ADD COLUMN last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -84,11 +84,11 @@ FOREIGN KEY (category_id) REFERENCES categories(category_id)
 ON DELETE SET NULL;
 
 INSERT INTO categories (category_name) VALUES 
-('Fertilizers'),
-('Pesticides'),
-('Seeds'),
-('Tools & Equipment'),
-('Animal Feeds');
+    ('Fertilizers'),
+    ('Pesticides'),
+    ('Seeds'),
+    ('Tools & Equipment'),
+    ('Animal Feeds');
 ON DUPLICATE KEY UPDATE category_name = category_name;
 
 UPDATE products SET category_id = (SELECT category_id FROM categories WHERE category_name = 'Other Supplies' LIMIT 1) 
