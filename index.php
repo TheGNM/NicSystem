@@ -145,6 +145,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             </div>
         </div>
     </div>
+    <script src="resources/js/active.js"></script>
 </body>
 
 </html>

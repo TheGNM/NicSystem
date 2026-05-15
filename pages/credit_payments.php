@@ -183,5 +183,6 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
             </tbody>
         </table>
     </div>
+    <script src="../resources/js/active.js"></script>
 </body>
 </html>

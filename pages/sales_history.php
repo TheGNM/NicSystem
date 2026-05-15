@@ -89,5 +89,6 @@ $sales = mysqli_query($conn, "SELECT * FROM sales ORDER BY sale_date DESC");
             </table>
         </div>
     </div>
+    <script src="../resources/js/active.js"></script>
 </body>
 </html>

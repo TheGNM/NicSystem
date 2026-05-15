@@ -350,5 +350,6 @@ $inventory = mysqli_query($conn, "SELECT * FROM products ORDER BY quantity ASC")
         </table>
     </div>
     <input type="button" value="Print Report" onclick="window.print()" class="print-btn">
+    <script src="../resources/js/active.js"></script>
 </body>
 </html>

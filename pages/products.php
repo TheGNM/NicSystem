@@ -525,9 +525,6 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             </div>
         </div>
         <?php endif; ?>
-
-
-        <script src="../resources/js/prod.js"></script>
-        <script src="../resources/js/prodsort.js"></script>
+        <script src="../resources/js/active.js"></script>
     </body>
 </html>
