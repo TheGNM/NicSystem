@@ -31,7 +31,7 @@ CREATE TABLE sales_items (
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
-CREATE TABLE IF NOT EXISTS admin_users (
+CREATE TABLE admin_users (
     admin_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -64,8 +64,50 @@ CREATE TABLE credit_payments (
     remarks TEXT,
     FOREIGN KEY (sales_id) REFERENCES sales(sales_id) ON DELETE CASCADE
 );
+
+ALTER TABLE products 
+ADD COLUMN category_id INT NULL,
+ADD COLUMN unit VARCHAR(50) DEFAULT 'pcs',
+ADD COLUMN reorder_point INT DEFAULT 5,
+ADD COLUMN location VARCHAR(100) NULL,
+ADD COLUMN last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE products 
+ADD CONSTRAINT fk_product_category 
+FOREIGN KEY (category_id) REFERENCES categories(category_id) 
+ON DELETE SET NULL;
+
+INSERT INTO categories (category_name) VALUES 
+('Fertilizers'),
+('Pesticides'),
+('Seeds'),
+('Tools & Equipment'),
+('Animal Feeds');
+ON DUPLICATE KEY UPDATE category_name = category_name;
+
+UPDATE products SET category_id = (SELECT category_id FROM categories WHERE category_name = 'Other Supplies' LIMIT 1) 
+WHERE category_id IS NULL;
+
+CREATE TABLE inventory_log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    action_type VARCHAR(50) NOT NULL,
+    quantity_change INT NOT NULL,
+    old_quantity INT NOT NULL,
+    new_quantity INT NOT NULL,
+    remarks TEXT,
+    created_by VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+);
 --for changing username and pass
-UPDATE admin_users 
-SET username ='admin',
-password = MD5('admin123') 
-WHERE username ='raven'
+--UPDATE admin_users 
+--SET username ='admin',
+--password = MD5('admin123') 
+--WHERE username ='raven'
