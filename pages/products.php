@@ -237,7 +237,7 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Inventory Value</div>
-                    <div class="stat-number">₱<?php echo number_format($stats['total_value'], 2); ?></div>
+                    <div class="stat-number">₱<?php echo number_format($stats['total_value'] ?? 0, 2); ?></div>
                 </div>
             </div>
             
@@ -304,7 +304,6 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
                         </tr>
                     </thead>
                     <tbody>
-                        //shows the products available to edit
                     <?php if(mysqli_num_rows($products) > 0): ?>
                     <?php while($row = mysqli_fetch_assoc($products)): 
                         // Determine stock status

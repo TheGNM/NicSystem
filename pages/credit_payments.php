@@ -115,7 +115,6 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
                 </tr>
             </thead>
             <tbody>
-                //shows the remaining utang kung meron
                 <?php if(mysqli_num_rows($credit_sales) > 0): ?>
                     <?php while($row = mysqli_fetch_assoc($credit_sales)): 
                         $is_overdue = ($row['due_date'] && strtotime($row['due_date']) < time());
@@ -163,7 +162,6 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
                 </tr>
             </thead>
             <tbody>
-                //shows the table of the credit payment history
                 <?php if(mysqli_num_rows($payment_history) > 0): ?>
                     <?php while($payment = mysqli_fetch_assoc($payment_history)): ?>
                     <tr>
