@@ -1,6 +1,19 @@
 .dashboard-content {
     padding: 28px;
 }
+
+.total-cash-col {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    font-weight: bold;
+}
  
 .low-stock-alert {
     background: #ffffff;
@@ -9,6 +22,7 @@
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     display: none;
+    margin-top: 20px;
 }
  
 .low-stock-alert:not(:empty) {

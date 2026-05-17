@@ -66,8 +66,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                 ?>
 
                 <tr>
-                    <th>Total Cash Collected</th>
-                    <td>₱<?php echo number_format($total_cash_collected, 2); ?></td>
+                    <p class="total-cash-col"><th>Total Cash Collected</th>
+                    <td>₱<?php echo number_format($total_cash_collected, 2); ?></td></p>
                 </tr>
                 <?php
 
