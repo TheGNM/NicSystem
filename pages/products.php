@@ -393,7 +393,6 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Add New Product</h2>
-                    <a href="products.php" class="modal-close">&times;</a>
                 </div>
                 <form method="POST" action="">
                     <table class="modal-table">
@@ -455,7 +454,6 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             <div class="modal-content modal-medium">
                 <div class="modal-header">
                     <h2>Manage Categories</h2>
-                    <a href="products.php" class="modal-close">&times;</a>
                 </div>
                 <form method="POST" action="" class="modal-addcat-form">
                     <table class="modal-table">
@@ -505,7 +503,6 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             <div class="modal-content modal-large">
                 <div class="modal-header">
                     <h2>Bulk Stock Update</h2>
-                    <a href="products.php" class="modal-close">&times;</a>
                 </div>
                 <form method="POST" action="">
                     <table class="bulk-table">
