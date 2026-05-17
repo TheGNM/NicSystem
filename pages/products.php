@@ -459,7 +459,7 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
                     <h2>Manage Categories</h2>
                     <a href="products.php" class="modal-close">&times;</a>
                 </div>
-                <form method="POST" action="">
+                <form method="POST" action="" class="modal-addcat-form">
                     <table class="modal-table">
                         <tr>
                             <td class="modal-label">New Category Name:</td>
