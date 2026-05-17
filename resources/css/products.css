@@ -129,6 +129,102 @@
     color: #ffffff;
     text-decoration: none;
 }
+
+.products-content .stats-dashboard {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.products-content .stats-dashboard .stat-box {
+    flex: 1;
+    min-width: 160px;
+    background: #f9f7f3;
+    border: 1px solid #ede9e0;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.products-content .stats-dashboard .stat-box .stat-label {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.products-content .stats-dashboard ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.products-content .stats-dashboard ul li {
+    list-style: none;
+    float: left;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number {
+    font-size: 24px;
+    color: #1a2e1a;
+    font-weight: 600;
+}
+
+.products-content .stats-dashboard .stat-box.low-stock {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.products-content .stats-dashboard .stat-box.critical-stock {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.products-content .stats-dashboard .stat-box.out-stock {
+    border-color: #9ca3af;
+    background: #f3f4f6;
+}
+
+.products-content .stats-dashboard .stat-box.total-products {
+    border-color: #5a9e4a;
+    background: #eaf4e6;
+}
+
+.products-content .stats-dashboard .stat-box.inventory-value {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number.low-stock {
+    color: #f59e0b;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number.critical-stock {
+    color: #dc2626;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number.out-stock {
+    color: #9ca3af;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number.total-products {
+    color: #5a9e4a;
+}
+
+.products-content .stats-dashboard .stat-box .stat-number.inventory-value {
+    color: #2563eb;
+}
+
+
+
 .button-add {
     padding: 16px 18px;
     border-top: 1px solid #ede9e0;

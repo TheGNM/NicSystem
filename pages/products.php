@@ -219,26 +219,38 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             
         <div class="products-content">
             <div class="stats-dashboard">
-                <div class="stat-box">
-                    <div class="stat-label">Total Products</div>
-                    <div class="stat-number"><?php echo $stats['total_products']; ?></div>
-                </div>
-                <div class="stat-box low-stock">
-                    <div class="stat-label">Low Stock</div>
-                    <div class="stat-number"><?php echo $stats['low_stock']; ?></div>
-                </div>
-                <div class="stat-box critical-stock">
-                    <div class="stat-label">Critical Stock</div>
-                    <div class="stat-number"><?php echo $stats['critical_stock']; ?></div>
-                </div>
-                <div class="stat-box out-stock">
-                    <div class="stat-label">Out of Stock</div>
-                    <div class="stat-number"><?php echo $stats['out_of_stock']; ?></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Inventory Value</div>
-                    <div class="stat-number">₱<?php echo number_format($stats['total_value'] ?? 0, 2); ?></div>
-                </div>
+                <ul>
+                    <li>
+                        <div class="stat-box total-products">
+                            <div class="stat-label">Total Products</div>
+                            <div class="stat-number"><?php echo $stats['total_products']; ?></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="stat-box low-stock">
+                            <div class="stat-label">Low Stock</div>
+                            <div class="stat-number"><?php echo $stats['low_stock']; ?></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="stat-box critical-stock">
+                            <div class="stat-label">Critical Stock</div>
+                            <div class="stat-number"><?php echo $stats['critical_stock']; ?></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="stat-box out-stock">
+                            <div class="stat-label">Out of Stock</div>
+                            <div class="stat-number"><?php echo $stats['out_of_stock']; ?></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="stat-box inventory-value">
+                            <div class="stat-label">Inventory Value</div>
+                            <div class="stat-number">₱<?php echo number_format($stats['total_value'] ?? 0, 2); ?></div>
+                        </div>
+                    </li>
+                </ul>
             </div>
             
             <div class="filter-bar">
