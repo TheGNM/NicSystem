@@ -16,6 +16,6 @@ Collaboration courses with: ITE02
 - [x] phpMyAdmin / HeidiSQL (MySQL Configure)
 
 ## Developers
-* ravenrerere (Lead Developer, Backend, & Database)
-* princejohnrayp-hub (CSS & Design)
-* TheGNM (CSS & Function)
+* [ravenrerere](https://github.com/ravenrerere) (Lead Developer, Backend, & Database)
+* [princejohnrayp-hub](https://github.com/princejohnrayp-hub) (CSS & Design)
+* [TheGNM](https://github.com/TheGNM) (CSS & Function)
