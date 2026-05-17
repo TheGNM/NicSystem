@@ -356,5 +356,6 @@ $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] 
     </form>
         </div>
     <script src="../resources/js/active.js"></script>
+    <script src="../resources/js/dropdown.js"></script>
 </body>
 </html>
