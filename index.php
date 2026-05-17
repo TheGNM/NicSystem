@@ -121,28 +121,28 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                     </tr>
                 </table>
             </div>
-            <div class="low-stock-alert">
-                <?php if ($low_stock > 0): ?>
+            <?php if ($low_stock > 0): ?>
+                <div class="low-stock-alert">
                     <h3 style="color: red;">⚠️ Low Stock Alert!</h3>
                     <table>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Current Stock</th>
-                            <th>Low Stock Threshold</th>
-                        </tr>
-                        <?php
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Current Stock</th>
+                        <th>Low Stock Threshold</th>
+                    </tr>
+                    <?php
                         $result = mysqli_query($conn, "SELECT * FROM products WHERE quantity <= low_stock_notif");
                         while ($row = mysqli_fetch_assoc($result)):
-                        ?>
-                            <tr>
-                                <td><?php echo $row['product_name']; ?></td>
-                                <td style="color: red;"><?php echo $row['quantity']; ?></td>
-                                <td><?php echo $row['low_stock_notif']; ?></td>
-                            </tr>
-                        <?php endwhile; ?>
+                    ?>
+                    <tr>
+                        <td><?php echo $row['product_name']; ?></td>
+                        <td style="color: red;"><?php echo $row['quantity']; ?></td>
+                        <td><?php echo $row['low_stock_notif']; ?></td>
+                    </tr>
+                    <?php endwhile; ?>
                     </table>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <script src="resources/js/active.js"></script>
