@@ -111,6 +111,15 @@ a:hover {
     border-bottom-color: #5a9e4a;
 }
 
+.success-message {
+    background: #d1e7dd;
+    color: #0f5132;
+    padding: 12px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #badbcc;
+}
+
 hr {
     border: none;
     border-top: 1px solid #ede9e0;

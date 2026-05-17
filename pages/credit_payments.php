@@ -91,11 +91,11 @@ $payment_history = mysqli_query($conn, "SELECT cp.*, s.invoice_number, s.custome
     <hr>
     
     <?php if(isset($_SESSION['message'])): ?>
-        <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
+        <p class="success-message"><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
     <?php endif; ?>
     
     <?php if(isset($_SESSION['error'])): ?>
-        <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+        <p class="error-message"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     
     <div class="credit-content">
