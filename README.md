@@ -11,6 +11,7 @@ Collaboration courses with: ITE02
 - [x] Hopes and Dreams
 
 ## Software
+* Visual Studio Code (Code Editor)
 * Laragon / XAMPP (Local Server Software)
 * Apache (Local Web Server)
 *  phpMyAdmin / HeidiSQL (MySQL Configure)
