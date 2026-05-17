@@ -440,13 +440,11 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
                             <td class="modal-label">Storage Location:</td>
                             <td><input type="text" name="location" placeholder="e.g., Aisle A, Shelf 1" class="modal-input"></td>
                         </tr>
-                        <tr>
-                            <td colspan="2" class="modal-buttons">
-                                <input type="submit" name="add_product" value="Add Product" class="submit-btn">
-                                <a href="products.php" class="cancel-btn">Cancel</a>
-                            </td>
-                        </tr>
                     </table>
+                    <div class="modal-buttons">
+                        <input type="submit" name="add_product" value="Add Product" class="submit-btn">
+                        <a href="products.php" class="cancel-btn">Cancel</a>
+                    </div>
                 </form>
             </div>
         </div>

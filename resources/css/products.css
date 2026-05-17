@@ -529,7 +529,7 @@
     text-decoration: none;
 }
 
-.modal-overlay .modal-content .modal-addcat-form .submit-btn {
+.modal-content .modal-buttons .submit-btn {
     padding: 9px 20px;
     background: #1a2e1a;
     color: #fff;
@@ -541,11 +541,27 @@
     transition: background 0.15s;
 }
 
-.modal-overlay .modal-content .modal-addcat-form .submit-btn:hover {
+.modal-content .modal-buttons .submit-btn:hover {
     background: #2d4a2d;
 }
 
-.modal-overlay .modal-content .modal-buttons a {
+.modal-content .submit-btn {
+    padding: 9px 20px;
+    background: #1a2e1a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.modal-content .submit-btn:hover {
+    background: #2d4a2d;
+}
+
+.modal-overlay .modal-buttons .modal-buttons a {    
     padding: 9px 20px;
     background: #f9f7f3;
     color: #6b7280;
@@ -555,6 +571,29 @@
     font-family: sans-serif;
     cursor: pointer;
     transition: all 0.15s;
+    text-decoration: none;
+}
+
+.modal-overlay .modal-buttons a {    
+    padding: 9px 20px;
+    background: #f9f7f3;
+    color: #6b7280;
+    border: 1px solid #ede9e0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+}
+
+.modal-overlay .modal-buttons .cancel-btn:hover {
+    background: #ede9e0;
+    text-decoration: none;
+}
+
+ .modal-overlay .modal-buttons a:hover {
+    background: #ede9e0;
     text-decoration: none;
 }
  
