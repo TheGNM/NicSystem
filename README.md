@@ -11,9 +11,9 @@ Collaboration courses with: ITE02
 - [x] Hopes and Dreams
 
 ## Software
-- [x] Laragon / XAMPP (Local Server Software)
-- [x] Apache (Local Web Server)
-- [x] phpMyAdmin / HeidiSQL (MySQL Configure)
+* Laragon / XAMPP (Local Server Software)
+* Apache (Local Web Server)
+*  phpMyAdmin / HeidiSQL (MySQL Configure)
 
 ## Developers
 * [ravenrerere](https://github.com/ravenrerere) (Lead Developer, Backend, & Database)
