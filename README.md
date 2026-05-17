@@ -4,10 +4,10 @@ Agri Supply Sales and Inventory System
 Collaboration courses with: ITE02
 
 ## Languages used
-- [ ] Server side / Backend (PHP)
-- [ ] Database (MySQL)
+- [x] Server side / Backend (PHP)
+- [x] Database (MySQL)
 - [ ] Design (CSS)
-- [ ] Funtions (JavaScript)
+- [x] Funtions (JavaScript)
 - [x] Hopes and Dreams
 
 ## Software
