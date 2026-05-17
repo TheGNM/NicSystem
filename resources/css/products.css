@@ -223,17 +223,60 @@
     color: #2563eb;
 }
 
-
-
 .button-add {
     padding: 16px 18px;
     border-top: 1px solid #ede9e0;
     text-align: right;
     background: #f9f7f3;
 }
+
+.products-content .action-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.products-content .action-buttons .add-btn a {
+    padding: 9px 12px;
+}
+
+.products-content .action-buttons .category-btn a {
+    padding: 9px 14px;
+}
+
+.products-content .action-buttons .bulk-btn a {
+    padding: 9px 12px;
+}
  
-.add-btn, .addprod-button {
-    padding: 9px 20px;
+.products-content .action-buttons .add-btn {
+    outline: none;
+    background: #1a2e1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.products-content .action-buttons .category-btn {
+    outline: none;
+    background: #1a2e1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.products-content .action-buttons .bulk-btn {
+    outline: none;
     background: #1a2e1a;
     color: #ffffff;
     border: none;
@@ -245,8 +288,67 @@
     transition: background 0.15s;
 }
  
-.add-btn:hover, .addprod-button:hover {
+.products-content .action-buttons .add-btn:hover, .products-content .action-buttons .category-btn:hover, .products-content .action-buttons .bulk-btn:hover {
     background: #2d4a2d;
+}
+
+.filter-form {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    padding: 16px;
+    background: #f9f7f3;
+    border: 1px solid #ede9e0;
+    border-radius: 12px;
+}
+
+.filter-form ul {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-form ul li {
+    list-style: none;
+}
+
+.filter-form .filter-btn {
+    padding: 9px 14px;
+    background: #1a2e1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.filter-form .filter-btn:hover {
+    background: #2d4a2d;
+}
+
+.filter-form .reset-btn {
+    padding: 9px 14px;
+    background: #f9f7f3;
+    color: #6b7280;
+    border: 1px solid #ede9e0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: sans-serif;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.filter-form .reset-btn:hover {
+    background: #ede9e0;
+    text-decoration: none;
 }
  
 #productModal {

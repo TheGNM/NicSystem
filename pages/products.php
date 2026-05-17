@@ -255,48 +255,58 @@ $show_bulk_modal = isset($_GET['action']) && $_GET['action'] == 'bulk';
             
             <div class="filter-bar">
                 <form method="GET" action="" class="filter-form">
-                    <input type="text" name="search" placeholder="Search products..." value="<?php echo htmlspecialchars($search); ?>" class="filter-input">
-                    
-                    <select name="category" class="filter-select">
-                        <option value="0">All Categories</option>
-                        <?php 
-                        mysqli_data_seek($categories, 0);
-                        while($cat = mysqli_fetch_assoc($categories)): ?>
-                            <option value="<?php echo $cat['category_id']; ?>" <?php echo $category_filter == $cat['category_id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($cat['category_name']); ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                    
-                    <select name="stock_filter" class="filter-select">
-                        <option value="all" <?php echo $stock_filter == 'all' ? 'selected' : ''; ?>>All Stock Levels</option>
-                        <option value="critical" <?php echo $stock_filter == 'critical' ? 'selected' : ''; ?>>Critical (Below Reorder)</option>
-                        <option value="low" <?php echo $stock_filter == 'low' ? 'selected' : ''; ?>>Low Stock</option>
-                        <option value="out" <?php echo $stock_filter == 'out' ? 'selected' : ''; ?>>Out of Stock</option>
-                    </select>
-                    
-                    <select name="sort_by" class="filter-select">
-                        <option value="product_id" <?php echo $sort_by == 'product_id' ? 'selected' : ''; ?>>Sort by ID</option>
-                        <option value="product_name" <?php echo $sort_by == 'product_name' ? 'selected' : ''; ?>>Sort by Name</option>
-                        <option value="price" <?php echo $sort_by == 'price' ? 'selected' : ''; ?>>Sort by Price</option>
-                        <option value="quantity" <?php echo $sort_by == 'quantity' ? 'selected' : ''; ?>>Sort by Stock</option>
-                    </select>
-                    
-                    <select name="sort_order" class="filter-select">
-                        <option value="DESC" <?php echo $sort_order == 'DESC' ? 'selected' : ''; ?>>Descending</option>
-                        <option value="ASC" <?php echo $sort_order == 'ASC' ? 'selected' : ''; ?>>Ascending</option>
-                    </select>
-                    
-                    <button type="submit" class="filter-btn">Apply</button>
-                    <a href="products.php" class="reset-btn">Reset</a>
+                    <ul>
+                        <li>
+                            <input type="text" name="search" placeholder="Search products..." value="<?php echo htmlspecialchars($search); ?>" class="filter-input">
+                        </li>
+                        <li>
+                            <select name="category" class="filter-select">
+                                <option value="0">All Categories</option>
+                                <?php 
+                                mysqli_data_seek($categories, 0);
+                                while($cat = mysqli_fetch_assoc($categories)): ?>
+                                    <option value="<?php echo $cat['category_id']; ?>" <?php echo $category_filter == $cat['category_id'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($cat['category_name']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </li>
+                        <li>
+                            <select name="stock_filter" class="filter-select">
+                                <option value="all" <?php echo $stock_filter == 'all' ? 'selected' : ''; ?>>All Stock Levels</option>
+                                <option value="critical" <?php echo $stock_filter == 'critical' ? 'selected' : ''; ?>>Critical (Below Reorder)</option>
+                                <option value="low" <?php echo $stock_filter == 'low' ? 'selected' : ''; ?>>Low Stock</option>
+                                <option value="out" <?php echo $stock_filter == 'out' ? 'selected' : ''; ?>>Out of Stock</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select name="sort_by" class="filter-select">
+                                <option value="product_id" <?php echo $sort_by == 'product_id' ? 'selected' : ''; ?>>Sort by ID</option>
+                                <option value="product_name" <?php echo $sort_by == 'product_name' ? 'selected' : ''; ?>>Sort by Name</option>
+                                <option value="price" <?php echo $sort_by == 'price' ? 'selected' : ''; ?>>Sort by Price</option>
+                                <option value="quantity" <?php echo $sort_by == 'quantity' ? 'selected' : ''; ?>>Sort by Stock</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select name="sort_order" class="filter-select">
+                                <option value="DESC" <?php echo $sort_order == 'DESC' ? 'selected' : ''; ?>>Descending</option>
+                                <option value="ASC" <?php echo $sort_order == 'ASC' ? 'selected' : ''; ?>>Ascending</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button type="submit" class="filter-btn">Apply</button>
+                        </li>
+                        <li>
+                            <a href="products.php" class="reset-btn">Reset</a>
+                        </li>
+                    </ul>
                 </form>
             </div>
             
             <div class="action-buttons">
-                <button><a href="?action=add" class="action-btn add-btn">+ Add Product</a></button>
-                <button><a href="?action=categories" class="action-btn category-btn">Manage Categories</a></button>
-                <button><a href="?action=bulk" class="action-btn bulk-btn">Bulk Stock Update</a></button>
-                
+                <button class="action-btn add-btn"><a href="?action=add" class="action-btn add-btn">+ Add Product</a></button>
+                <button class="action-btn category-btn"><a href="?action=categories" class="action-btn category-btn">Manage Categories</a></button>
+                <button class="action-btn bulk-btn"><a href="?action=bulk" class="action-btn bulk-btn">Bulk Stock Update</a></button>
             </div>
             
             <h3>Product List</h3>

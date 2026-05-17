@@ -232,7 +232,7 @@ $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] 
     <hr>
 
     <?php if(isset($_SESSION['error'])): ?>
-        <p><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+        <p class="prod-shortstock"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
     <?php endif; ?>
     
     <div class="sales-content">

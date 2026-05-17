@@ -120,6 +120,15 @@ a:hover {
     border: 1px solid #badbcc;
 }
 
+.prod-shortstock {
+    background: #f8d7da;
+    color: #842029;
+    padding: 12px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c2c7;
+}
+
 hr {
     border: none;
     border-top: 1px solid #ede9e0;
