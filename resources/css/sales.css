@@ -178,6 +178,11 @@ body {
 .payment-table thead {
     display: none;
 }
+
+.payment-type-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
  
 .pay-label {
     color: #6b7280;
