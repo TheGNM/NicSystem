@@ -259,7 +259,7 @@ $selected_payment_type = isset($_POST['payment_type']) ? $_POST['payment_type'] 
             <h4 class="item-label">Item <?php echo $i; ?></h4>
             
                 <div class="item-fields">
-                <select name="product_id[]" class="product-select">
+                <select name="product_id[]" class="product-select" required>
                     <option value="">Select Product</option>
                     <?php 
                     mysqli_data_seek($products, 0);
